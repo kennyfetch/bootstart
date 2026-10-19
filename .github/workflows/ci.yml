@@ -22,7 +22,7 @@ jobs:
       # Fail on a stale uv.lock instead of silently updating it (pnpm already does this in CI).
       UV_LOCKED: "1"
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       - name: Install just
         uses: taiki-e/install-action@v2
@@ -32,17 +32,17 @@ jobs:
       # Each toolchain is set up only when its manifest exists at the repository root.
       - name: Set up uv (Python)
         if: hashFiles('pyproject.toml') != ''
-        uses: astral-sh/setup-uv@v6
+        uses: astral-sh/setup-uv@v7
         with:
           enable-cache: true
 
       - name: Set up pnpm
         if: hashFiles('package.json') != ''
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
 
       - name: Set up Node.js
         if: hashFiles('package.json') != ''
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: pnpm
