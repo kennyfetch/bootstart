@@ -73,7 +73,8 @@ Other languages: follow the official style guide of the language and record it i
 - Tests are deterministic: no real network, no real clock, no shared state between tests.
   Inject a fake clock or client instead of mocking deep internals.
 - Test behavior through the public interface, not implementation details.
-- `tests/` mirrors `src/`: `src/billing/invoice.py` → `tests/billing/test_invoice.py`.
+- `tests/` mirrors the code under `src/`: Python `src/<package>/billing/invoice.py` →
+  `tests/billing/test_invoice.py`; TypeScript `src/billing/invoice.ts` → `tests/billing/invoice.test.ts`.
 - Coverage is a safety net, not a goal: CI enforces 80 % overall; aim higher on business logic.
 - Every bug fix starts with a test that reproduces the bug.
 

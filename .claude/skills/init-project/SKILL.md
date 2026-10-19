@@ -47,18 +47,21 @@ Derive three names: display name (`My Tool`), `kebab-case` (`my-tool`), `snake_c
 the closest pack as a model for structure. Use the current stable version of each tool, strict
 settings, and the language's official style guide.
 
-**Framework:** if the stack includes one (FastAPI, React, Next.js…), add it with its official
-tooling, then make sure the `justfile` recipes still cover all the code, and make `just dev` start
-the app (dev server or entry point).
+**Framework:** if the stack includes one (FastAPI, React, Typer…), add it with its official
+tooling and make sure the `justfile` recipes still cover all the code. If the app needs an entry
+point to run, create the smallest one the framework allows — a CLI that only shows `--help`, an
+API with only a health route, an empty page — with one smoke test, and make `just dev` start it.
+Real behavior comes with the first `feature`. If nothing can run yet (a library, for example),
+leave `dev` printing its hint.
 
 Then:
 
-- `.github/workflows/ci.yml`: keep only the toolchain setup steps this project needs; add the
-  setup action for any other toolchain.
-- `.github/dependabot.yml`: replace the `stacks/*` entries with one entry per stack directory —
-  `directory: /` for a single stack, one per folder for two stacks — with the stack's ecosystem
-  (`uv`, `npm`, `cargo`, `gomod`…), the same schedule and grouping, and the replaced entries'
-  `ignore` rules.
+- `.github/workflows/ci.yml`: keep only the toolchain setup steps this project needs, and the
+  `UV_LOCKED` variable only with a Python stack; add the setup action for any other toolchain.
+- `.github/dependabot.yml`: replace the `stacks/*` entries and their header comment with one entry
+  per stack directory — `directory: /` for a single stack, one per folder for two stacks — with the
+  stack's ecosystem (`uv`, `npm`, `cargo`, `gomod`…), the same schedule and grouping, and the
+  `ignore` rules of the replaced entry with the same ecosystem.
 - `.gitignore`: make sure the stack's patterns are present.
 
 ## 4. Documents
@@ -66,7 +69,8 @@ Then:
 - `AGENTS.md`, section "Project": name, purpose, stack.
 - `README.md`: replace with `.claude/skills/init-project/README.project.md`, filled in.
 - `docs/decisions/0001-stack-choice.md`: ADR from the interview and step 2 (use the `adr` workflow).
-- `docs/ARCHITECTURE.md`: fill "Purpose", "Context" and "Constraints" from the interview.
+- `docs/ARCHITECTURE.md`: fill "Purpose", "Context" and "Constraints" from the interview, and
+  "Module map" with the folders just created.
 - License:
   - MIT or Apache-2.0: create `LICENSE` with the standard text, current year, holder from
     `git config user.name`; in the README's "License" section, name the license and link `LICENSE`.
@@ -80,15 +84,22 @@ Then:
 
 ## 5. Clean up
 
-Delete `stacks/`, `.github/workflows/template-selftest.yml` and this skill's folder
-`.claude/skills/init-project/`. Remove the `init-project` row from the table in `AGENTS.md` and
-from the command list in `CLAUDE.md`.
+1. Delete `stacks/`, `.github/workflows/template-selftest.yml` and this skill's folder
+   `.claude/skills/init-project/`.
+2. Remove what referred to them:
+   - `AGENTS.md`: the `init-project` row of the workflow table and the HTML comment in "Project";
+   - `CLAUDE.md`: `/init-project` in the command list;
+   - `docs/STACKS.md`: the "Packs shipped in `stacks/`" section.
+3. Search the repository (excluding `.git`, `node_modules`, `.venv`) for `init-project`, `stacks/`
+   and `selftest`: nothing may remain.
 
 ## 6. Verify
 
 Run `just setup`, then `just check`. Fix until it passes.
 
-## 7. Git and GitHub — confirm with the user before each command
+## 7. Git and GitHub
+
+Show the user the commands below, adapted to the project, and ask for a single confirmation.
 
 1. No repository yet: `git init -b main`.
 2. Commit everything on `main` as `chore: initialize project from Bootstart` — the only commit made
@@ -96,6 +107,12 @@ Run `just setup`, then `just check`. Fix until it passes.
 3. No `origin` remote yet: `gh repo create <kebab-name> --private|--public --source . --push`.
    Otherwise: `git push`.
 4. Apply repository settings and branch protection: `bash scripts/setup-github.sh solo` (or `team`).
+   On Windows, run it with Git Bash — Claude Code's Bash tool, or
+   `& "$env:ProgramFiles\Git\bin\bash.exe" scripts/setup-github.sh solo` from PowerShell — never
+   `bash` from PowerShell, which may start WSL. A private repository on GitHub Free cannot have
+   rulesets: skip this step and say so.
+5. Close any Dependabot PR opened on `stacks/` before init (`gh pr list --author app/dependabot`,
+   then `gh pr close <number>`): it no longer applies.
 
 ## 8. Report
 

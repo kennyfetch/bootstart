@@ -1,6 +1,8 @@
 # Template justfile. /init-project replaces it with the chosen stack pack's justfile.
 # Until then, the standard recipes only print a hint, and `selftest` validates every pack.
 
+# Windows: PowerShell 5.1 reports any failing command as exit code 1 (pass/fail stays correct;
+# read the output for the real code).
 set windows-shell := ["powershell.exe", "-NoLogo", "-NoProfile", "-Command"]
 
 # List recipes

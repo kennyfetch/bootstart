@@ -4,7 +4,7 @@ Snapshot of where the work stands, so anyone — human or AI — can pick it up 
 Overwritten (not appended) at the end of each session by the `handoff` workflow. Git is the log.
 Keep it under ~60 lines.
 
-**Last updated:** _YYYY-MM-DD_ · **Branch:** `main` · **Commit:** `_short sha_`
+**Last updated:** _YYYY-MM-DD_ · **Branch:** `main`
 
 ## Current state
 
