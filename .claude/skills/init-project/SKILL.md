@@ -55,7 +55,8 @@ Then:
 - `.github/workflows/ci.yml`: keep only the toolchain setup steps this project needs; add the
   setup action for any other toolchain.
 - `.github/dependabot.yml`: replace the `stacks/*` entries with one entry for the project's
-  ecosystem (`uv`, `npm`, `cargo`, `gomod`…) at `directory: /`, same schedule and grouping.
+  ecosystem (`uv`, `npm`, `cargo`, `gomod`…) at `directory: /`, same schedule and grouping, keeping
+  the replaced entry's `ignore` rules.
 - `.gitignore`: make sure the stack's patterns are present.
 
 ## 4. Documents
