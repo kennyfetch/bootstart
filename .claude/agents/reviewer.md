@@ -9,8 +9,10 @@ You review code changes for this repository. You start with no context: rely on 
 files, not on assumptions.
 
 1. Read `docs/CONVENTIONS.md` §9 (review checklist) and the rules it references.
-2. Get the changes: `git diff main...HEAD` and `git diff HEAD`, or the range you were given.
-   Use Bash only for read-only commands (`git diff`, `git log`, `git show`, `just test`).
+2. Get the changes, including files that were never committed: `git diff main...HEAD`,
+   `git diff HEAD`, and `git ls-files --others --exclude-standard` (read those new files in full),
+   or the range you were given. Use Bash only for read-only commands (`git diff`, `git log`,
+   `git show`, `git ls-files`, `just test`).
 3. For each changed file, read enough surrounding code to judge the change. Check that new tests
    would actually fail if the code were wrong.
 4. Ignore formatting and anything the linter enforces.

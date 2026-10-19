@@ -1,7 +1,7 @@
 # Choosing a stack
 
-Used by the `init-project` workflow. Pick the most boring stack that fits the project well:
-mature tooling, large community, good AI-agent familiarity. Record the choice in ADR 0001.
+Pick the most boring stack that fits the project well: mature tooling, large community, good
+AI-agent familiarity. Record the choice in an ADR (0001 for the initial stack).
 
 ## By project nature
 
@@ -11,7 +11,7 @@ mature tooling, large community, good AI-agent familiarity. Record the choice in
 | Full-stack web app (SSR, SEO) | TypeScript + Next.js | Python + Django when the app is mostly admin/forms/CRUD |
 | REST / HTTP API | Python + FastAPI | TypeScript + Hono/Fastify to share types with a TS front-end; Go for high throughput and low ops |
 | Data processing, ML, automation scripts | Python | — |
-| CLI tool | Python + Typer | Go or Rust when a single static binary matters |
+| CLI tool | Python: `argparse` for one command, Typer for several | Go or Rust when a single static binary matters |
 | Library / SDK | The target ecosystem's language | — |
 | Desktop app | Tauri (TypeScript UI + Rust core) | Electron for heavy Node integrations; .NET (WinUI) for Windows-only |
 | Mobile app | React Native + Expo (TypeScript) | Flutter (Dart); native Kotlin/Swift for deep platform features |
@@ -38,12 +38,12 @@ commands identical from the root:
 
 - **Folders:** one per stack (`backend/`, `frontend/`), each a full pack with its own `justfile`,
   config, `src/`, `tests/` and lockfile.
-- **Root `justfile`:** every standard recipe runs the same recipe in each folder, the way the
-  template's `selftest` recipe does:
+- **Root `justfile`:** every standard recipe runs the same recipe in each folder, for example
   `{{ just_executable() }} --justfile backend/justfile --working-directory backend check`.
   `dev` usually needs both running: document it in the README, or start each one in its own terminal.
-- **CI:** one job per folder in `ci.yml`, modeled on `template-selftest.yml`
-  (`defaults.run.working-directory`, toolchain files pointing into the folder). Keep a final job
+- **CI:** one job per folder in `ci.yml`, with `defaults.run.working-directory: <folder>` and the
+  toolchain inputs pointing into the folder (`package_json_file`, `node-version-file`,
+  `cache-dependency-path`). Keep a final job
   named `check` so the required status check does not change. It must fail when any job fails —
   GitHub counts a skipped required check as passing:
 

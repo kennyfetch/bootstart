@@ -40,7 +40,7 @@ Every task goes through `just` — the same commands run locally, in hooks and i
 
 1. English for code, identifiers, comments, docs and commits.
 2. Tests first: write or update a failing test, then the code. A bug fix starts with a regression test.
-3. Small, focused changes: one concern per commit and per PR.
+3. Small, focused changes: one concern per PR, which squash merge turns into one commit on `main`.
 4. Never commit to `main`. Branch as `<type>/<short-slug>` (e.g. `feat/user-login`).
 5. Commit messages follow Conventional Commits (`feat: …`, `fix: …`).
 6. No new dependency without a stated reason; a significant one gets an ADR.
@@ -70,7 +70,8 @@ Claude Code runs them as `/<name>`. Other agents: read the file and follow it.
 - `just check` passes.
 - New behavior is covered by tests.
 - `docs/ARCHITECTURE.md` or an ADR is updated when structure or a key choice changed.
-- The `handoff` workflow has run at the end of the session.
+- The `handoff` workflow has run at the end of the session (`ship` runs it; once is enough when
+  nothing changed since).
 
 ## Saving tokens
 

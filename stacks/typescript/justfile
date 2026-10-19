@@ -1,5 +1,7 @@
 # TypeScript stack: pnpm + Biome + tsc + Vitest. Recipe contract: docs/STACKS.md.
 
+# Windows: PowerShell 5.1 reports any failing command as exit code 1 (pass/fail stays correct;
+# read the output for the real code).
 set windows-shell := ["powershell.exe", "-NoLogo", "-NoProfile", "-Command"]
 
 # List recipes
@@ -10,7 +12,7 @@ default:
 setup:
     pnpm install
 
-# Run the app locally (init-project points it at the entry point or framework dev server)
+# Run the app locally (prints a hint until the project has an entry point)
 dev:
     @echo "Nothing to run yet: make this recipe start the app, e.g. pnpm exec vite"
 

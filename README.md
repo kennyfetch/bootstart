@@ -53,7 +53,7 @@ winget install --id pnpm.pnpm -e               # TypeScript stack
 |---|---|---|
 | Implement, tests first | `/feature <task>` | "Run the feature workflow for <task>" |
 | Add tests to existing code | `/test <target>` | "Run the test workflow on <target>" |
-| Review the diff | `/review` | "Run the review workflow" |
+| Review the diff (optional: `ship` runs it) | `/review` | "Run the review workflow" |
 | Commit, push, open a PR | `/ship` | "Run the ship workflow" |
 | Record a decision | `/adr <decision>` | "Run the adr workflow" |
 | End the session | `/handoff` | "Run the handoff workflow" |
