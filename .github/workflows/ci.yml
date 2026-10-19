@@ -9,8 +9,10 @@ permissions:
   contents: read
 
 concurrency:
-  group: ci-${{ github.ref }}
-  # Cancel superseded PR runs only: every commit on main keeps its own result.
+  # PRs: one group per branch, so a new push cancels the superseded run.
+  # Pushes to main: one group per commit, so no run waits behind or replaces another and every
+  # commit keeps its own result.
+  group: ci-${{ github.event_name == 'pull_request' && github.ref || github.sha }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
