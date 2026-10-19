@@ -23,6 +23,7 @@ Every task goes through `just` — the same commands run locally, in hooks and i
 | Command | Effect |
 |---|---|
 | `just setup` | Install dependencies |
+| `just dev` | Run the app locally |
 | `just format` | Format code in place |
 | `just fix` | Format + apply safe lint fixes |
 | `just lint` | Check formatting and lint rules (no changes) |
@@ -46,7 +47,7 @@ Every task goes through `just` — the same commands run locally, in hooks and i
    `.env.example`, which documents every variable.
 8. Never edit lockfiles or generated files by hand.
 9. When requirements are ambiguous, ask. When you assume, say so.
-10. Do not hand-format code: `just format` does it.
+10. Run `just format` after editing code; never hand-format. Claude Code does it automatically.
 
 ## Workflows
 
@@ -68,7 +69,7 @@ Claude Code runs them as `/<name>`. Other agents: read the file and follow it.
 - `just check` passes.
 - New behavior is covered by tests.
 - `docs/ARCHITECTURE.md` or an ADR is updated when structure or a key choice changed.
-- `docs/HANDOFF.md` is updated at the end of the session.
+- `docs/HANDOFF.md` is updated at the end of the session (team mode: the PR body, see `ship`).
 
 ## Saving tokens
 

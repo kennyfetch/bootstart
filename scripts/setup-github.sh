@@ -1,18 +1,28 @@
 #!/usr/bin/env bash
 # Applies repository settings and protects the default branch on GitHub.
 #
-# Usage: bash scripts/setup-github.sh [solo|team]
+# Usage: bash scripts/setup-github.sh [solo|team] [extra required check]...
 #   solo: pull request + green CI required, no approval (GitHub forbids approving your own PR).
 #   team: same, plus one approving review, code-owner review and stale-approval dismissal.
+#   Extra arguments are CI job names that must pass too. The template itself uses
+#   "stack (python)" "stack (typescript)", because its own `check` job has nothing to check.
 #
 # Requires an authenticated GitHub CLI (`gh auth login`). Safe to re-run.
 # Branch rulesets need a public repository, or GitHub Pro/Team for a private one.
 set -euo pipefail
 
 readonly MODE="${1:-solo}"
+if (( $# > 0 )); then shift; fi
 readonly RULESET_NAME="protect-default-branch"
 # Must match the CI job name in .github/workflows/ci.yml.
 readonly REQUIRED_CHECK="check"
+
+required_checks_json="{ \"context\": \"$REQUIRED_CHECK\" }"
+required_checks_list="$REQUIRED_CHECK"
+for extra_check in "$@"; do
+  required_checks_json+=", { \"context\": \"$extra_check\" }"
+  required_checks_list+=", $extra_check"
+done
 
 case "$MODE" in
   solo) approval_count=0; is_team=false ;;
@@ -21,7 +31,7 @@ case "$MODE" in
 esac
 
 repo="$(gh repo view --json nameWithOwner --jq .nameWithOwner)"
-echo "Configuring $repo in $MODE mode"
+echo "Configuring $repo in $MODE mode (required checks: $required_checks_list)"
 
 # Squash merge only: one commit per pull request keeps main's history readable.
 gh repo edit "$repo" \
@@ -54,7 +64,7 @@ ruleset_json="$(cat <<JSON
       "type": "required_status_checks",
       "parameters": {
         "strict_required_status_checks_policy": false,
-        "required_status_checks": [{ "context": "$REQUIRED_CHECK" }]
+        "required_status_checks": [$required_checks_json]
       }
     }
   ]

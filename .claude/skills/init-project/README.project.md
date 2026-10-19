@@ -18,6 +18,7 @@ just check   # lint, type-check and test — what CI runs
 
 | Command | Effect |
 |---|---|
+| `just dev` | Run the app locally |
 | `just format` | Format code |
 | `just fix` | Format and apply safe lint fixes |
 | `just lint` | Check formatting and lint rules |

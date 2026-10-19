@@ -10,6 +10,10 @@ default:
 setup:
     uv sync
 
+# Run the app locally (init-project points it at the entry point or framework dev server)
+dev:
+    @echo "Nothing to run yet: make this recipe start the app, e.g. uv run python -m project_name"
+
 # Format code in place (also run by the Claude Code edit hook)
 format:
     uv run ruff format .

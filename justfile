@@ -8,6 +8,7 @@ default:
     @{{ just_executable() }} --list
 
 setup: _not-initialized
+dev: _not-initialized
 format: _not-initialized
 fix: _not-initialized
 lint: _not-initialized

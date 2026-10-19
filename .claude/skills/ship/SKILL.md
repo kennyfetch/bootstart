@@ -10,7 +10,9 @@ argument-hint: "[optional PR title]"
 1. **Branch.** If on `main`, create a branch first (`<type>/<short-slug>`); never push to `main`.
 2. **Check.** Run `just check`. Stop and report if it fails.
 3. **Review.** Run the `review` workflow. Stop on any blocking finding and report it.
-4. **Handoff.** Run the `handoff` workflow so `docs/HANDOFF.md` ships with the change.
+4. **Handoff.** Solo: run the `handoff` workflow so `docs/HANDOFF.md` ships with the change.
+   Team mode (an owner is set in `.github/CODEOWNERS`): leave `docs/HANDOFF.md` alone — parallel
+   PRs would all conflict on it — and put the handoff notes in the PR body instead.
 5. **Commit.** Stage only files related to the task (`git status` first; never `git add -A` blindly,
    never stage `.env` or local settings). Message in Conventional Commits format:
    `<type>(<optional scope>): <imperative summary, ≤ 72 chars>`, with a short body for the why.

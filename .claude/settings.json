@@ -23,6 +23,7 @@
       "Read(./**/node_modules/**)",
       "Read(./**/.venv/**)",
       "Read(./**/dist/**)",
+      "Read(./**/build/**)",
       "Read(./**/coverage/**)",
       "Read(./**/htmlcov/**)",
       "Read(./**/pnpm-lock.yaml)",
