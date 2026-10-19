@@ -14,7 +14,8 @@ Task: $ARGUMENTS
 2. **Clarify.** Restate the expected behavior as 2–5 acceptance criteria. If anything is ambiguous,
    ask before writing code. List any assumption you make.
 3. **Branch.** From an up-to-date `main`: `git switch -c <type>/<short-slug>` (`feat/…`, `fix/…`).
-   Skip if already on a dedicated branch for this task.
+   Skip if already on a dedicated branch for this task. A bug in this branch's own unmerged work is
+   fixed on the same branch.
 4. **Plan.** For anything beyond a few lines, write a plan of at most ~10 lines: files to touch,
    new functions and their names, tests to add. Keep it in the conversation, not in a file.
 5. **Tests first.** Write tests for each acceptance criterion, following `docs/CONVENTIONS.md` §6.

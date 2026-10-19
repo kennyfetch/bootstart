@@ -41,7 +41,8 @@ winget install --id pnpm.pnpm -e               # TypeScript stack
 ## Start a new project
 
 1. Create a repository from this template — on GitHub with **Use this template**, or:
-   `gh repo create my-app --template kennyfetch/bootstart --private --clone`
+   `gh repo create my-app --template kennyfetch/bootstart --public --clone`
+   (`--private` works too, but on GitHub Free a private repository gets no branch protection)
 2. Open it in Claude Code and run `/init-project`. With another agent, ask it to follow
    `.claude/skills/init-project/SKILL.md`.
 3. It interviews you, proposes a stack suited to the project, installs it, fills the placeholders,
@@ -86,8 +87,10 @@ winget install --id pnpm.pnpm -e               # TypeScript stack
 
 - **Solo:** `bash scripts/setup-github.sh solo`. Pull requests and green CI are required, no approval
   (GitHub does not let you approve your own pull request).
-- **Team:** set the owner in `.github/CODEOWNERS`, then `bash scripts/setup-github.sh team` to require
-  one approving review. The `handoff` workflow then writes its notes in each branch's PR description
+- **Team:** needs at least one other collaborator with write access — alone, nobody could approve
+  your PRs, so the script refuses. Set the owner in `.github/CODEOWNERS`, then
+  `bash scripts/setup-github.sh team` to require one approving review. The `handoff` workflow then
+  writes its notes in each branch's PR description
   instead of `docs/HANDOFF.md`, which parallel PRs would all conflict on.
 - Branch rulesets need a public repository, or GitHub Pro/Team for a private one.
 - On Windows, run the script from Git Bash: in PowerShell, `bash` may start WSL instead.

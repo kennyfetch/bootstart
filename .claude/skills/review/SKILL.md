@@ -15,6 +15,12 @@ Base branch: $ARGUMENTS (use `main` if empty).
      shows them.
 
    If the change is large, review file by file instead of loading everything at once.
+
+   **Delta review** — when a full review already ran in this session and only fixes or a small
+   follow-up came after: review only what changed since (diff against the state that was reviewed,
+   plus any new untracked file), checking that each earlier finding is resolved. In Claude Code,
+   continue the same `reviewer` subagent (SendMessage) instead of starting a new one: it already
+   has the context, which roughly halves the cost.
 2. In Claude Code, delegate to the `reviewer` subagent so the review runs in a fresh context, then
    relay its findings. If the change touches untrusted input (network, uploaded or external files),
    authentication, secrets, or shell/SQL execution, also run `/security-review`.

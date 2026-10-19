@@ -36,8 +36,8 @@ A framework (FastAPI, React, …) is added on top of a pack during `init-project
 For example a Python API with a TypeScript front-end. Keep each stack self-contained and the
 commands identical from the root:
 
-- **Folders:** one per stack (`backend/`, `frontend/`), each a full pack with its own `justfile`,
-  config, `src/`, `tests/` and lockfile.
+- **Folders:** one per stack (`backend/`, `frontend/`), each a complete stack with its own
+  `justfile`, config, `src/`, `tests/` and lockfile.
 - **Root `justfile`:** every standard recipe runs the same recipe in each folder, for example
   `{{ just_executable() }} --justfile backend/justfile --working-directory backend check`.
   `dev` usually needs both running: document it in the README, or start each one in its own terminal.
@@ -73,4 +73,4 @@ Any stack — shipped or created for a project — must provide:
 4. Toolchain setup steps in `.github/workflows/ci.yml`, triggered by a file at the repository root.
 5. An ecosystem entry in `.github/dependabot.yml`.
 6. Its ignore patterns in `.gitignore`.
-7. An example source file and test that demonstrate `docs/CONVENTIONS.md`.
+7. For a reusable pack only: an example source file and test that demonstrate `docs/CONVENTIONS.md`.

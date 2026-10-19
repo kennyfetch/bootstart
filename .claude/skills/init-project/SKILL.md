@@ -17,7 +17,10 @@ the remaining steps without interrupting the user unless something fails or a st
 1. Project name and one-sentence purpose (skip what the input already gives).
 2. Nature: web front-end, full-stack web, API, CLI, data/automation, library, desktop, mobile, game, other.
 3. Where it runs, and any hard constraint: platform, performance, offline, hosting, existing code.
-4. Solo or team? Public or private repository? License: MIT, Apache-2.0, or none (proprietary).
+4. Solo or team? Team means at least one other person with write access who reviews PRs; alone,
+   choose solo (switch later with `scripts/setup-github.sh team`). Public or private repository?
+   On GitHub Free, a private repository gets no branch protection. License: MIT, Apache-2.0, or
+   none (proprietary).
 
 ## 2. Stack
 
@@ -34,7 +37,7 @@ Derive three names: display name (`My Tool`), `kebab-case` (`my-tool`), `snake_c
    repository root — never local `node_modules/`, `.venv/` or caches. Its `justfile` replaces the
    root one.
 2. Replace the placeholders in every copied file except lockfiles (`uv.lock`, `pnpm-lock.yaml`),
-   which `just setup` regenerates in step 6: `Project Name` → display name,
+   which `just setup` regenerates: `Project Name` → display name,
    `project-name` → kebab-case, `project_name` → snake_case, `Project description.` → purpose.
    Rename `src/project_name/` accordingly (Python).
 3. Keep the example module (`pricing`) and its tests: they show the conventions while the first
@@ -47,12 +50,18 @@ Derive three names: display name (`My Tool`), `kebab-case` (`my-tool`), `snake_c
 the closest pack as a model for structure. Use the current stable version of each tool, strict
 settings, and the language's official style guide.
 
+**Then, before anything else:** delete `stacks/` — its nested tool configs (a second `biome.json`,
+for example) make the formatter refuse to run — and run `just setup`, so the edit hook and the
+`just` recipes work for the rest of init.
+
 **Framework:** if the stack includes one (FastAPI, React, Typer…), add it with its official
 tooling and make sure the `justfile` recipes still cover all the code. If the app needs an entry
 point to run, create the smallest one the framework allows — a CLI that only shows `--help`, an
 API with only a health route, an empty page — with one smoke test, and make `just dev` start it.
 Real behavior comes with the first `feature`. If nothing can run yet (a library, for example),
-leave `dev` printing its hint.
+leave `dev` printing its hint. React with Vitest: set `environment: "jsdom"` and a setup file that
+calls Testing Library's `cleanup` after each test (`afterEach(cleanup)`) — the pack does not enable
+Vitest globals, so it does not happen on its own.
 
 Then:
 
@@ -77,15 +86,19 @@ Then:
   - None: create no `LICENSE` file; the README's "License" section reads
     `Proprietary. All rights reserved.` with no link.
 - `.github/CODEOWNERS`: in team mode, uncomment the default rule with the owner's GitHub handle.
-- `docs/HANDOFF.md`: replace the "not initialized" content with the state after init and the next
-  steps — the first feature, then deleting the `pricing` example once real code is tested. This is
-  done here, before the initial commit, in both modes: afterwards `main` is protected, and the
-  `handoff` workflow only runs on development branches.
+- `docs/HANDOFF.md`: replace the "not initialized" content, here, before the initial commit:
+  afterwards `main` is protected and the `handoff` workflow only runs on development branches.
+  - Solo: the state after init and the next steps — the first feature, then deleting the
+    `pricing` example once real code is tested.
+  - Team: this file is never updated per PR, so write content that stays true. "Current state"
+    says the live state is in the open PRs (`gh pr list`) and their `## Handoff` sections; keep
+    only durable pitfalls and open questions. The first steps (first feature, deleting the
+    `pricing` example) go in an issue, opened in step 7.
 
 ## 5. Clean up
 
-1. Delete `stacks/`, `.github/workflows/template-selftest.yml` and this skill's folder
-   `.claude/skills/init-project/`.
+1. Delete `.github/workflows/template-selftest.yml` and this skill's folder
+   `.claude/skills/init-project/` (`stacks/` is already gone, step 3).
 2. Remove what referred to them:
    - `AGENTS.md`: the `init-project` row of the workflow table and the HTML comment in "Project";
    - `CLAUDE.md`: `/init-project` in the command list;
@@ -113,6 +126,8 @@ Show the user the commands below, adapted to the project, and ask for a single c
    rulesets: skip this step and say so.
 5. Close any Dependabot PR opened on `stacks/` before init (`gh pr list --author app/dependabot`,
    then `gh pr close <number>`): it no longer applies.
+6. Team mode: open an issue with the first steps (`gh issue create`), as noted in
+   `docs/HANDOFF.md`.
 
 ## 8. Report
 

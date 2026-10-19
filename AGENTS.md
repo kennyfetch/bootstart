@@ -13,7 +13,8 @@ Keep this file short: it is loaded in every session. Details live in `docs/`.
 ## Start here
 
 1. Read `docs/HANDOFF.md`: current state, work in progress, next steps. Team mode (owner set in
-   `.github/CODEOWNERS`): also read the handoff notes in the branch's PR (`gh pr view --json body`).
+   `.github/CODEOWNERS`): the live state is in the PRs instead — the branch's PR notes
+   (`gh pr view --json body`) and the open PRs (`gh pr list`).
 2. Read `docs/CONVENTIONS.md` before writing or reviewing code.
 3. Read `docs/ARCHITECTURE.md` only when the task touches structure or several modules.
 
