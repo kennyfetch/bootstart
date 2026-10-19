@@ -6,7 +6,7 @@ set windows-shell := ["powershell.exe", "-NoLogo", "-NoProfile", "-Command"]
 default:
     @{{ just_executable() }} --list
 
-# Install dependencies into .venv
+# Install dependencies into .venv (CI sets UV_LOCKED=1, so a stale lockfile fails there)
 setup:
     uv sync
 

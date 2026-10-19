@@ -42,7 +42,8 @@ Every task goes through `just` — the same commands run locally, in hooks and i
 4. Never commit to `main`. Branch as `<type>/<short-slug>` (e.g. `feat/user-login`).
 5. Commit messages follow Conventional Commits (`feat: …`, `fix: …`).
 6. No new dependency without a stated reason; a significant one gets an ADR.
-7. Never read, print or commit secrets. `.env` is off-limits; document variables in `.env.example`.
+7. Never read, print or commit secrets. `.env` and `.env.*` files are off-limits, except
+   `.env.example`, which documents every variable.
 8. Never edit lockfiles or generated files by hand.
 9. When requirements are ambiguous, ask. When you assume, say so.
 10. Do not hand-format code: `just format` does it.

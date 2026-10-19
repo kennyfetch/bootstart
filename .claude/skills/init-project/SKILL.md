@@ -59,7 +59,11 @@ Then:
 - `README.md`: replace with `.claude/skills/init-project/README.project.md`, filled in.
 - `docs/decisions/0001-stack-choice.md`: ADR from the interview and step 2 (use the `adr` workflow).
 - `docs/ARCHITECTURE.md`: fill "Purpose", "Context" and "Constraints" from the interview.
-- `LICENSE`: standard text of the chosen license, current year, holder from `git config user.name`.
+- License:
+  - MIT or Apache-2.0: create `LICENSE` with the standard text, current year, holder from
+    `git config user.name`; in the README's "License" section, name the license and link `LICENSE`.
+  - None: create no `LICENSE` file; the README's "License" section reads
+    `Proprietary. All rights reserved.` with no link.
 - `.github/CODEOWNERS`: in team mode, uncomment the default rule with the owner's GitHub handle.
 
 ## 5. Clean up

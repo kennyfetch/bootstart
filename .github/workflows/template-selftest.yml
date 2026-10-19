@@ -18,6 +18,9 @@ jobs:
       fail-fast: false
       matrix:
         stack: [python, typescript]
+    env:
+      # Fail on a stale uv.lock instead of silently updating it (pnpm already does this in CI).
+      UV_LOCKED: "1"
     defaults:
       run:
         working-directory: stacks/${{ matrix.stack }}

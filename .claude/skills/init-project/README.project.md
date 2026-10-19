@@ -38,4 +38,4 @@ Details in [docs/CONVENTIONS.md](docs/CONVENTIONS.md).
 
 ## License
 
-_See [LICENSE](LICENSE)._
+_Filled by init-project: the license name and a link to `LICENSE`, or "Proprietary. All rights reserved."_

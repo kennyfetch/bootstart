@@ -18,6 +18,9 @@ jobs:
     name: check
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    env:
+      # Fail on a stale uv.lock instead of silently updating it (pnpm already does this in CI).
+      UV_LOCKED: "1"
     steps:
       - uses: actions/checkout@v5
 
