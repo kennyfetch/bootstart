@@ -38,7 +38,7 @@ Derive three names: display name (`My Tool`), `kebab-case` (`my-tool`), `snake_c
    `project-name` → kebab-case, `project_name` → snake_case, `Project description.` → purpose.
    Rename `src/project_name/` accordingly (Python).
 3. Keep the example module (`pricing`) and its tests: they show the conventions while the first
-   feature is written. Note in the handoff that they must be deleted once real code is tested.
+   feature is written. Their deletion goes in the next steps of `docs/HANDOFF.md` (step 4).
 
 **Two stacks** (e.g. API + front-end): install each pack in its own folder and follow
 "Two stacks in one repository" in `docs/STACKS.md`.
@@ -73,6 +73,10 @@ Then:
   - None: create no `LICENSE` file; the README's "License" section reads
     `Proprietary. All rights reserved.` with no link.
 - `.github/CODEOWNERS`: in team mode, uncomment the default rule with the owner's GitHub handle.
+- `docs/HANDOFF.md`: replace the "not initialized" content with the state after init and the next
+  steps — the first feature, then deleting the `pricing` example once real code is tested. This is
+  done here, before the initial commit, in both modes: afterwards `main` is protected, and the
+  `handoff` workflow only runs on development branches.
 
 ## 5. Clean up
 
@@ -96,4 +100,4 @@ Run `just setup`, then `just check`. Fix until it passes.
 ## 8. Report
 
 What was set up, how to run it, and the suggested first step: `/feature <first feature>`.
-Finish with the `handoff` workflow.
+Do not run the `handoff` workflow here: `docs/HANDOFF.md` was written in step 4 and committed.
