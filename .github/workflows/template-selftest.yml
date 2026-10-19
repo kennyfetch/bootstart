@@ -1,0 +1,47 @@
+# Validates every stack pack in stacks/. Template maintenance only: /init-project deletes this file.
+name: Template self-test
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  stack:
+    name: stack (${{ matrix.stack }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        stack: [python, typescript]
+    defaults:
+      run:
+        working-directory: stacks/${{ matrix.stack }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: just
+
+      - if: matrix.stack == 'python'
+        uses: astral-sh/setup-uv@v6
+
+      - if: matrix.stack == 'typescript'
+        uses: pnpm/action-setup@v4
+        with:
+          package_json_file: stacks/typescript/package.json
+
+      - if: matrix.stack == 'typescript'
+        uses: actions/setup-node@v5
+        with:
+          node-version-file: stacks/typescript/.nvmrc
+          cache: pnpm
+          cache-dependency-path: stacks/typescript/pnpm-lock.yaml
+
+      - run: just setup
+      - run: just check

@@ -1,0 +1,3 @@
+# Reviewers requested automatically on pull requests.
+# Team mode: uncomment and set the owner, then run `bash scripts/setup-github.sh team`.
+# * @your-github-handle

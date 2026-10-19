@@ -1,0 +1,34 @@
+# TypeScript stack: pnpm + Biome + tsc + Vitest. Recipe contract: docs/STACKS.md.
+
+set windows-shell := ["powershell.exe", "-NoLogo", "-NoProfile", "-Command"]
+
+# List recipes
+default:
+    @{{ just_executable() }} --list
+
+# Install dependencies (lockfile is frozen automatically in CI)
+setup:
+    pnpm install
+
+# Format code in place (also run by the Claude Code edit hook)
+format:
+    pnpm exec biome format --write .
+
+# Format and apply safe lint fixes
+fix:
+    pnpm exec biome check --write .
+
+# Check formatting and lint rules without changing files
+lint:
+    pnpm exec biome check .
+
+# Static type checking
+typecheck:
+    pnpm exec tsc
+
+# Run tests with coverage; extra arguments go to Vitest
+test *args:
+    pnpm exec vitest run --coverage {{ args }}
+
+# Everything CI runs
+check: lint typecheck test

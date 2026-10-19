@@ -1,0 +1,17 @@
+# Normalize line endings: LF in the repository and in working copies, whatever the OS.
+* text=auto eol=lf
+
+*.cmd text eol=crlf
+*.bat text eol=crlf
+*.ps1 text eol=crlf
+
+*.png binary
+*.jpg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.zip binary
+
+# Collapse lockfiles in GitHub diffs.
+uv.lock linguist-generated=true
+pnpm-lock.yaml linguist-generated=true

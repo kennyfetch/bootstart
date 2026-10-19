@@ -1,0 +1,13 @@
+# Weekly, grouped updates: one PR per ecosystem instead of one per package.
+# /init-project adds the stack's ecosystem below, following the same pattern.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      github-actions:
+        patterns: ["*"]
+    commit-message:
+      prefix: ci
