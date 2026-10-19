@@ -33,7 +33,8 @@ Derive three names: display name (`My Tool`), `kebab-case` (`my-tool`), `snake_c
 1. Copy the pack's tracked files (`git ls-files stacks/<pack>`), dotfiles included, to the
    repository root — never local `node_modules/`, `.venv/` or caches. Its `justfile` replaces the
    root one.
-2. Replace the placeholders in every copied file: `Project Name` → display name,
+2. Replace the placeholders in every copied file except lockfiles (`uv.lock`, `pnpm-lock.yaml`),
+   which `just setup` regenerates in step 6: `Project Name` → display name,
    `project-name` → kebab-case, `project_name` → snake_case, `Project description.` → purpose.
    Rename `src/project_name/` accordingly (Python).
 3. Keep the example module (`pricing`) and its tests: they show the conventions while the first
@@ -54,9 +55,10 @@ Then:
 
 - `.github/workflows/ci.yml`: keep only the toolchain setup steps this project needs; add the
   setup action for any other toolchain.
-- `.github/dependabot.yml`: replace the `stacks/*` entries with one entry for the project's
-  ecosystem (`uv`, `npm`, `cargo`, `gomod`…) at `directory: /`, same schedule and grouping, keeping
-  the replaced entry's `ignore` rules.
+- `.github/dependabot.yml`: replace the `stacks/*` entries with one entry per stack directory —
+  `directory: /` for a single stack, one per folder for two stacks — with the stack's ecosystem
+  (`uv`, `npm`, `cargo`, `gomod`…), the same schedule and grouping, and the replaced entries'
+  `ignore` rules.
 - `.gitignore`: make sure the stack's patterns are present.
 
 ## 4. Documents

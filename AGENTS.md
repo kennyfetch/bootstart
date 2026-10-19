@@ -12,7 +12,8 @@ Keep this file short: it is loaded in every session. Details live in `docs/`.
 
 ## Start here
 
-1. Read `docs/HANDOFF.md`: current state, work in progress, next steps.
+1. Read `docs/HANDOFF.md`: current state, work in progress, next steps. Team mode (owner set in
+   `.github/CODEOWNERS`): also read the handoff notes in the branch's PR (`gh pr view --json body`).
 2. Read `docs/CONVENTIONS.md` before writing or reviewing code.
 3. Read `docs/ARCHITECTURE.md` only when the task touches structure or several modules.
 
@@ -61,7 +62,7 @@ Claude Code runs them as `/<name>`. Other agents: read the file and follow it.
 | `test` | Add or improve tests for existing code |
 | `review` | Review the current diff against the conventions |
 | `ship` | Check, commit, push and open a pull request |
-| `handoff` | Update `docs/HANDOFF.md` before ending a session |
+| `handoff` | Save the current state for the next session before ending one |
 | `adr` | Record an architecture decision |
 
 ## Definition of done
@@ -69,7 +70,7 @@ Claude Code runs them as `/<name>`. Other agents: read the file and follow it.
 - `just check` passes.
 - New behavior is covered by tests.
 - `docs/ARCHITECTURE.md` or an ADR is updated when structure or a key choice changed.
-- `docs/HANDOFF.md` is updated at the end of the session (team mode: the PR body, see `ship`).
+- The `handoff` workflow has run at the end of the session.
 
 ## Saving tokens
 

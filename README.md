@@ -68,7 +68,8 @@ winget install --id pnpm.pnpm -e               # TypeScript stack
 - **Qwen Code** reads `AGENTS.md` in recent versions. In older ones, set `"context": {"fileName":
   "AGENTS.md"}` in `.qwen/settings.json`. Local models have small context windows, which is one more
   reason `AGENTS.md` stays short.
-- Agents hand work to each other through `docs/HANDOFF.md` and git, never through chat history.
+- Agents hand work to each other through the `handoff` workflow (`docs/HANDOFF.md`, or the PR
+  description in team mode) and git, never through chat history.
 
 ## Saving tokens
 
@@ -86,8 +87,8 @@ winget install --id pnpm.pnpm -e               # TypeScript stack
 - **Solo:** `bash scripts/setup-github.sh solo`. Pull requests and green CI are required, no approval
   (GitHub does not let you approve your own pull request).
 - **Team:** set the owner in `.github/CODEOWNERS`, then `bash scripts/setup-github.sh team` to require
-  one approving review. Handoff notes then go in each PR body instead of `docs/HANDOFF.md`, which
-  parallel PRs would all conflict on.
+  one approving review. The `handoff` workflow then writes its notes in each branch's PR description
+  instead of `docs/HANDOFF.md`, which parallel PRs would all conflict on.
 - Branch rulesets need a public repository, or GitHub Pro/Team for a private one.
 - On Windows, run the script from Git Bash: in PowerShell, `bash` may start WSL instead.
 

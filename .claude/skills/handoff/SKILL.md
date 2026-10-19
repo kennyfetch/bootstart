@@ -1,11 +1,20 @@
 ---
 name: handoff
-description: Update docs/HANDOFF.md with the current state so another person or AI can resume the work. Use at the end of a session, before /clear, or when asked to hand off.
+description: Save the current state so another person or AI can resume the work — in docs/HANDOFF.md when solo, in the branch's PR description in team mode. Use at the end of a session, before /clear, or when asked to hand off.
 ---
 
 # Handoff
 
-Rewrite `docs/HANDOFF.md` — overwrite it, do not append. Keep the existing section headings.
+Where the notes go depends on the mode:
+
+- **Solo** (no active rule in `.github/CODEOWNERS`): rewrite `docs/HANDOFF.md` — overwrite it,
+  do not append, keep its section headings.
+- **Team** (an owner is set in `.github/CODEOWNERS`): never touch `docs/HANDOFF.md`, since
+  parallel branches would all conflict on it. Write the notes in a `## Handoff` section of the
+  current branch's PR description: read it (`gh pr view --json body --jq .body`), replace any
+  previous `## Handoff` section, write it back (`gh pr edit --body-file <file>`). No PR yet: ask
+  the user, then push the branch and open a draft (`gh pr create --draft`). The next session reads
+  the notes with `gh pr view --json body`.
 
 1. Gather facts, not memories: `git status`, `git log --oneline -10`, current branch, open PRs
    (`gh pr list --author @me`, if `gh` is available), and what was done in this session.
