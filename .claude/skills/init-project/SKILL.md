@@ -30,27 +30,32 @@ Derive three names: display name (`My Tool`), `kebab-case` (`my-tool`), `snake_c
 
 **With a pack** in `stacks/<pack>/`:
 
-1. Copy the pack's whole content, dotfiles included, to the repository root. Its `justfile`
-   replaces the root one.
+1. Copy the pack's tracked files (`git ls-files stacks/<pack>`), dotfiles included, to the
+   repository root — never local `node_modules/`, `.venv/` or caches. Its `justfile` replaces the
+   root one.
 2. Replace the placeholders in every copied file: `Project Name` → display name,
    `project-name` → kebab-case, `project_name` → snake_case, `Project description.` → purpose.
    Rename `src/project_name/` accordingly (Python).
 3. Keep the example module (`pricing`) and its tests: they show the conventions while the first
    feature is written. Note in the handoff that they must be deleted once real code is tested.
 
+**Two stacks** (e.g. API + front-end): install each pack in its own folder and follow
+"Two stacks in one repository" in `docs/STACKS.md`.
+
 **Without a pack:** build the equivalent by following the stack contract in `docs/STACKS.md`, using
 the closest pack as a model for structure. Use the current stable version of each tool, strict
 settings, and the language's official style guide.
 
 **Framework:** if the stack includes one (FastAPI, React, Next.js…), add it with its official
-tooling, then make sure the `justfile` recipes still cover all the code.
+tooling, then make sure the `justfile` recipes still cover all the code, and make `just dev` start
+the app (dev server or entry point).
 
 Then:
 
 - `.github/workflows/ci.yml`: keep only the toolchain setup steps this project needs; add the
   setup action for any other toolchain.
-- `.github/dependabot.yml`: add the stack's ecosystem (`uv`, `npm`, `cargo`, `gomod`…) with the
-  same schedule and grouping as the `github-actions` entry.
+- `.github/dependabot.yml`: replace the `stacks/*` entries with one entry for the project's
+  ecosystem (`uv`, `npm`, `cargo`, `gomod`…) at `directory: /`, same schedule and grouping.
 - `.gitignore`: make sure the stack's patterns are present.
 
 ## 4. Documents

@@ -1,5 +1,6 @@
 # Weekly, grouped updates: one PR per ecosystem instead of one per package.
-# /init-project adds the stack's ecosystem below, following the same pattern.
+# The stacks/* entries keep the template's packs current; /init-project replaces them with a single
+# entry for the project's own ecosystem at the repository root.
 version: 2
 updates:
   - package-ecosystem: github-actions
@@ -11,3 +12,23 @@ updates:
         patterns: ["*"]
     commit-message:
       prefix: ci
+
+  - package-ecosystem: uv
+    directory: /stacks/python
+    schedule:
+      interval: weekly
+    groups:
+      python:
+        patterns: ["*"]
+    commit-message:
+      prefix: build
+
+  - package-ecosystem: npm
+    directory: /stacks/typescript
+    schedule:
+      interval: weekly
+    groups:
+      typescript:
+        patterns: ["*"]
+    commit-message:
+      prefix: build

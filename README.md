@@ -9,7 +9,7 @@ easy to read for the humans who maintain the code.
 ```
 AGENTS.md              Instructions for every AI agent (short: loaded in each session)
 CLAUDE.md              Imports AGENTS.md, adds Claude Code specifics
-justfile               One command interface: setup, format, fix, lint, typecheck, test, check
+justfile               One command interface: setup, dev, format, fix, lint, typecheck, test, check
 docs/
   CONVENTIONS.md       Naming, comments, structure, errors, tests, git, review checklist
   ARCHITECTURE.md      One-page system overview (filled per project)
@@ -41,7 +41,7 @@ winget install --id pnpm.pnpm -e               # TypeScript stack
 ## Start a new project
 
 1. Create a repository from this template — on GitHub with **Use this template**, or:
-   `gh repo create my-app --template <owner>/bootstart --private --clone`
+   `gh repo create my-app --template kennyfetch/bootstart --private --clone`
 2. Open it in Claude Code and run `/init-project`. With another agent, ask it to follow
    `.claude/skills/init-project/SKILL.md`.
 3. It interviews you, proposes a stack suited to the project, installs it, fills the placeholders,
@@ -76,6 +76,8 @@ winget install --id pnpm.pnpm -e               # TypeScript stack
 - Skills cost almost nothing until used: only their one-line description is loaded.
 - Tools enforce style (formatter, linter, type checker), so no rule needs repeating in prompts.
 - Dependencies, build output, coverage and lockfiles are excluded from AI reads (`.claude/settings.json`).
+  These exclusions block Claude's file reading, not shell commands such as `cat`: rule 7 of
+  `AGENTS.md` covers secrets for every agent.
 - One task per session; `/handoff` then `/clear` keeps the context small.
 - Small files and functions mean less to read for every change.
 
@@ -84,7 +86,8 @@ winget install --id pnpm.pnpm -e               # TypeScript stack
 - **Solo:** `bash scripts/setup-github.sh solo`. Pull requests and green CI are required, no approval
   (GitHub does not let you approve your own pull request).
 - **Team:** set the owner in `.github/CODEOWNERS`, then `bash scripts/setup-github.sh team` to require
-  one approving review.
+  one approving review. Handoff notes then go in each PR body instead of `docs/HANDOFF.md`, which
+  parallel PRs would all conflict on.
 - Branch rulesets need a public repository, or GitHub Pro/Team for a private one.
 - On Windows, run the script from Git Bash: in PowerShell, `bash` may start WSL instead.
 
@@ -92,6 +95,9 @@ winget install --id pnpm.pnpm -e               # TypeScript stack
 
 - `just selftest` runs setup and every check of each stack pack locally; the `Template self-test`
   workflow does the same in CI.
+- The template's own `check` job has nothing to check, so its branch protection also requires the
+  pack jobs: `bash scripts/setup-github.sh solo "stack (python)" "stack (typescript)"`.
 - To add a stack pack: create `stacks/<name>/` following the stack contract in `docs/STACKS.md`,
-  then add it to the `selftest` recipe, the self-test workflow matrix and the table in `docs/STACKS.md`.
+  then add it to the `selftest` recipe, the self-test workflow matrix, `.github/dependabot.yml`,
+  the table in `docs/STACKS.md` and the required checks above.
 - Mark the GitHub repository as a template: `gh repo edit --template`.
