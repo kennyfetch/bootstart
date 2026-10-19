@@ -18,8 +18,10 @@ Where the notes go depends on the mode and the branch:
   uncommitted.
 - **Team** (an owner is set in `.github/CODEOWNERS`): never touch `docs/HANDOFF.md`, since
   parallel branches would all conflict on it. Write the notes in a `## Handoff` section of the
-  current branch's PR description: read it (`gh pr view --json body --jq .body`), replace any
-  previous `## Handoff` section, write it back with `gh pr edit --body-file <file>`, the file
+  current branch's PR description, at the end of the body. The section runs from `## Handoff` to
+  the next `## ` heading or the end of the body; use `###` sub-headings inside it. Read the body
+  (`gh pr view --json body --jq .body`), replace any previous `## Handoff` section, write it back
+  with `gh pr edit --body-file <file>`, the file
   being outside the repository (system temp folder). No PR yet: ask the user, then push the branch
   and open a draft (`gh pr create --draft`). The next session reads the notes with
   `gh pr view --json body`.

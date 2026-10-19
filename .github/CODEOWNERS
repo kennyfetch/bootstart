@@ -1,3 +1,4 @@
 # Reviewers requested automatically on pull requests.
-# Team mode: uncomment and set the owner, then run `bash scripts/setup-github.sh team`.
+# An active rule turns on team mode for the workflows (see AGENTS.md); branch protection comes from
+# scripts/setup-github.sh team.
 # * @your-github-handle

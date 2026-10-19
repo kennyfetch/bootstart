@@ -15,7 +15,9 @@ files, not on assumptions.
    `git show`, `git ls-files`, `just test`).
 3. For each changed file, read enough surrounding code to judge the change. Check that new tests
    would actually fail if the code were wrong.
-4. Ignore formatting and anything the linter enforces.
+4. Ignore formatting and anything the linter enforces. In team mode (an active rule in
+   `.github/CODEOWNERS`), `docs/HANDOFF.md` is intentionally not updated per PR: do not flag it as
+   stale.
 5. Report, most severe first, grouped as **Blocking**, **Should fix**, **Nit**:
    `path:line — problem — suggested fix`. One line each; no praise, no restating the diff.
    If nothing blocks, say so in one sentence.

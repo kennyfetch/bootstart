@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 # Applies repository settings and protects the default branch on GitHub.
 #
-# Usage: bash scripts/setup-github.sh [solo|team] [extra required check]...
+# Usage (on Windows, from Git Bash): bash scripts/setup-github.sh [solo|team] [extra required check]...
 #   solo: pull request + green CI required, no approval (GitHub forbids approving your own PR).
 #   team: same, plus one approving review, code-owner review and stale-approval dismissal.
-#   Extra arguments are CI job names that must pass too. The template itself uses
-#   "stack (python)" "stack (typescript)", because its own `check` job has nothing to check.
+#         Needs at least one other collaborator with write access, or no PR could ever be merged.
+#   Extra arguments are more CI job names that must pass, e.g. "stack (python)".
 #
 # Requires an authenticated GitHub CLI (`gh auth login`). Safe to re-run.
 # Branch rulesets need a public repository, or GitHub Pro/Team for a private one.
@@ -31,6 +31,19 @@ case "$MODE" in
 esac
 
 repo="$(gh repo view --json nameWithOwner --jq .nameWithOwner)"
+
+# A required approval with nobody else able to give it would block every PR for good.
+if [[ "$MODE" == team ]]; then
+  owner="${repo%%/*}"
+  other_writers="$(gh api "repos/$repo/collaborators" --paginate \
+    --jq ".[] | select(.login != \"$owner\" and .permissions.push) | .login")"
+  if [[ -z "$other_writers" ]]; then
+    echo "Team mode needs a collaborator besides $owner with write access: with only you, every PR" >&2
+    echo "would wait for an approval nobody can give. Add one first, or use solo mode." >&2
+    exit 1
+  fi
+fi
+
 echo "Configuring $repo in $MODE mode (required checks: $required_checks_list)"
 
 # Squash merge only: one commit per pull request keeps main's history readable.
