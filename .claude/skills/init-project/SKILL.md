@@ -85,7 +85,9 @@ Then:
     `git config user.name`; in the README's "License" section, name the license and link `LICENSE`.
   - None: create no `LICENSE` file; the README's "License" section reads
     `Proprietary. All rights reserved.` with no link.
-- `.github/CODEOWNERS`: in team mode, uncomment the default rule with the owner's GitHub handle.
+- `.github/CODEOWNERS`: in team mode, uncomment the default rule with the team members' GitHub
+  handles. They are requested as reviewers automatically; any collaborator with write access can
+  give the required approval (see `scripts/setup-github.sh`).
 - `docs/HANDOFF.md`: replace the "not initialized" content, here, before the initial commit:
   afterwards `main` is protected and the `handoff` workflow only runs on development branches.
   - Solo: the state after init and the next steps — the first feature, then deleting the

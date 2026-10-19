@@ -22,9 +22,17 @@ Where the notes go depends on the mode and the branch:
   the next `## ` heading or the end of the body; use `###` sub-headings inside it. Read the body
   (`gh pr view --json body --jq .body`), replace any previous `## Handoff` section, write it back
   with `gh pr edit --body-file <file>`, the file
-  being outside the repository (system temp folder). No PR yet: ask the user, then push the branch
-  and open a draft (`gh pr create --draft`). The next session reads the notes with
-  `gh pr view --json body`.
+  being outside the repository (system temp folder). The next session reads the notes with
+  `gh pr view --json body`. Once the notes are in the PR, delete `.git/HANDOFF.local.md` if it
+  exists.
+
+  No PR yet: a draft PR needs at least one commit ahead of `main` (`git log main..HEAD`). Ask the
+  user which way to go:
+  - **Publish now:** commit the task's files if nothing is committed yet
+    (`<type>: wip <summary>` — the squash merge removes it from `main`'s history), push the
+    branch, open a draft (`gh pr create --draft`), then write the notes in it as above.
+  - **Not yet:** write the notes to `.git/HANDOFF.local.md` instead. It is never committed and
+    survives branch switches, but exists only on this machine: say so to the user.
 - **On `main`** (either mode): handoff notes belong to a development branch — `main` is protected
   and a PR from `main` to `main` is impossible. Unfinished work: create its branch first
   (`<type>/<short-slug>`), then continue as above. Nothing in progress: say there is nothing to hand

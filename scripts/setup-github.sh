@@ -3,8 +3,11 @@
 #
 # Usage (on Windows, from Git Bash): bash scripts/setup-github.sh [solo|team] [extra required check]...
 #   solo: pull request + green CI required, no approval (GitHub forbids approving your own PR).
-#   team: same, plus one approving review, code-owner review and stale-approval dismissal.
-#         Needs at least one other collaborator with write access, or no PR could ever be merged.
+#   team: same, plus one approving review from any collaborator with write access, and
+#         stale-approval dismissal. Needs at least one collaborator besides you with write access,
+#         or no PR of yours could ever be merged. .github/CODEOWNERS only requests reviewers.
+#         Requiring code-owner approval instead (REQUIRE_CODE_OWNER_REVIEW=true) needs at least two
+#         owners who review each other: nobody can approve their own PR.
 #   Extra arguments are more CI job names that must pass, e.g. "stack (python)".
 #
 # Requires an authenticated GitHub CLI (`gh auth login`). Safe to re-run.
@@ -16,6 +19,8 @@ if (( $# > 0 )); then shift; fi
 readonly RULESET_NAME="protect-default-branch"
 # Must match the CI job name in .github/workflows/ci.yml.
 readonly REQUIRED_CHECK="check"
+# Off by default: with a single code owner, that owner's own PRs could never be approved.
+readonly REQUIRE_CODE_OWNER_REVIEW="${REQUIRE_CODE_OWNER_REVIEW:-false}"
 
 required_checks_json="{ \"context\": \"$REQUIRED_CHECK\" }"
 required_checks_list="$REQUIRED_CHECK"
@@ -29,16 +34,21 @@ case "$MODE" in
   team) approval_count=1; is_team=true ;;
   *) echo "Unknown mode '$MODE' (expected solo or team)" >&2; exit 1 ;;
 esac
+case "$REQUIRE_CODE_OWNER_REVIEW" in
+  true | false) ;;
+  *) echo "REQUIRE_CODE_OWNER_REVIEW must be true or false" >&2; exit 1 ;;
+esac
 
 repo="$(gh repo view --json nameWithOwner --jq .nameWithOwner)"
 
 # A required approval with nobody else able to give it would block every PR for good.
+# Compare with the signed-in user, not the repository owner, which may be an organization.
 if [[ "$MODE" == team ]]; then
-  owner="${repo%%/*}"
+  me="$(gh api user --jq .login)"
   other_writers="$(gh api "repos/$repo/collaborators" --paginate \
-    --jq ".[] | select(.login != \"$owner\" and .permissions.push) | .login")"
+    --jq ".[] | select(.login != \"$me\" and .permissions.push) | .login")"
   if [[ -z "$other_writers" ]]; then
-    echo "Team mode needs a collaborator besides $owner with write access: with only you, every PR" >&2
+    echo "Team mode needs a collaborator besides $me with write access: with only you, every PR" >&2
     echo "would wait for an approval nobody can give. Add one first, or use solo mode." >&2
     exit 1
   fi
@@ -68,7 +78,7 @@ ruleset_json="$(cat <<JSON
       "parameters": {
         "required_approving_review_count": $approval_count,
         "dismiss_stale_reviews_on_push": $is_team,
-        "require_code_owner_review": $is_team,
+        "require_code_owner_review": $REQUIRE_CODE_OWNER_REVIEW,
         "require_last_push_approval": false,
         "required_review_thread_resolution": true
       }

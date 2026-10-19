@@ -88,10 +88,13 @@ winget install --id pnpm.pnpm -e               # TypeScript stack
 - **Solo:** `bash scripts/setup-github.sh solo`. Pull requests and green CI are required, no approval
   (GitHub does not let you approve your own pull request).
 - **Team:** needs at least one other collaborator with write access — alone, nobody could approve
-  your PRs, so the script refuses. Set the owner in `.github/CODEOWNERS`, then
-  `bash scripts/setup-github.sh team` to require one approving review. The `handoff` workflow then
-  writes its notes in each branch's PR description
-  instead of `docs/HANDOFF.md`, which parallel PRs would all conflict on.
+  your PRs, so the script refuses. List the team in `.github/CODEOWNERS` (reviewers requested
+  automatically), then `bash scripts/setup-github.sh team`: every PR needs one approval from any
+  collaborator with write access. Mandatory code-owner approval is off by default, because a single
+  owner could never get their own PRs approved; to turn it on, list at least two owners and run
+  `REQUIRE_CODE_OWNER_REVIEW=true bash scripts/setup-github.sh team`. The `handoff` workflow then
+  writes its notes in each branch's PR description instead of `docs/HANDOFF.md`, which parallel PRs
+  would all conflict on.
 - Branch rulesets need a public repository, or GitHub Pro/Team for a private one.
 - On Windows, run the script from Git Bash: in PowerShell, `bash` may start WSL instead.
 

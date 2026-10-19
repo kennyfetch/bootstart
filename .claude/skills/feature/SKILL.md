@@ -9,7 +9,7 @@ argument-hint: <what to build or fix>
 Task: $ARGUMENTS
 
 1. **Context.** Read `docs/HANDOFF.md` (team mode: also the branch's PR description, if a PR
-   exists). Read `docs/ARCHITECTURE.md` only if the task spans modules.
+   exists, and `.git/HANDOFF.local.md`, if it exists). Read `docs/ARCHITECTURE.md` only if the task spans modules.
    Locate the relevant code by searching; open only the files you need.
 2. **Clarify.** Restate the expected behavior as 2–5 acceptance criteria. If anything is ambiguous,
    ask before writing code. List any assumption you make.
