@@ -1,4 +1,4 @@
-# Reviewers requested automatically on pull requests.
-# An active rule turns on team mode for the workflows (see AGENTS.md); branch protection comes from
-# scripts/setup-github.sh team.
-# * @your-github-handle
+# Reviewers requested automatically on pull requests. Their approval is not mandatory: in team mode,
+# scripts/setup-github.sh requires one approval from any collaborator with write access.
+# An active rule turns on team mode for the workflows (see AGENTS.md).
+# * @your-github-handle @teammate-handle
