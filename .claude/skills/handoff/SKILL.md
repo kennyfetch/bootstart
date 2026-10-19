@@ -5,7 +5,7 @@ description: Save the current state so another person or AI can resume the work 
 
 # Handoff
 
-Where the notes go depends on the mode:
+Where the notes go depends on the mode and the branch:
 
 - **Solo** (no active rule in `.github/CODEOWNERS`): rewrite `docs/HANDOFF.md` — overwrite it,
   do not append, keep its section headings.
@@ -15,6 +15,10 @@ Where the notes go depends on the mode:
   previous `## Handoff` section, write it back (`gh pr edit --body-file <file>`). No PR yet: ask
   the user, then push the branch and open a draft (`gh pr create --draft`). The next session reads
   the notes with `gh pr view --json body`.
+- **On `main`** (either mode): handoff notes belong to a development branch — `main` is protected
+  and a PR from `main` to `main` is impossible. Unfinished work: create its branch first
+  (`<type>/<short-slug>`), then continue as above. Nothing in progress: say there is nothing to hand
+  off, and stop.
 
 1. Gather facts, not memories: `git status`, `git log --oneline -10`, current branch, open PRs
    (`gh pr list --author @me`, if `gh` is available), and what was done in this session.
