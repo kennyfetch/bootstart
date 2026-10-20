@@ -12,6 +12,17 @@ Input: $ARGUMENTS
 Ask everything in step 1 at once, wait for the answers and the stack confirmation (step 2), then run
 the remaining steps without interrupting the user unless something fails or a step below says to ask.
 
+**Where commands run.** Without a dev container, every stack-tool command (`just …`, `uv …`,
+`pnpm …`) runs on the host. With one (block 7), the host may lack those tools: from the end of
+step 3 on, they run inside the container (see step 3). Files are edited from wherever you are — the
+folder is shared — and git and GitHub commands (step 7) run on the host, or in the container on a
+resumed run (see step 7).
+
+**Resumed run.** If the init notes file exists — its path is
+`git rev-parse --path-format=absolute --git-path bootstart-init.md` — init was paused to move into
+the dev container: read the answers and the progress from it instead of asking again, and continue
+from the step it names.
+
 ## 1. Interview
 
 Skip what the input already gives. "Not decided yet" is a valid answer: it becomes an open question
@@ -38,7 +49,8 @@ in the matching document.
 7. **Dev container:** work inside a container that holds every tool? Recommended for a team (same
    environment for everyone) or to let AI agents work autonomously, isolated from the rest of the
    machine. Not suited to mobile apps with an emulator, desktop GUI apps or games. Needs Docker
-   (Docker Desktop or Podman) locally, or GitHub Codespaces.
+   (Docker Desktop or Podman) locally, with VS Code's Dev Containers extension or Node.js to open
+   the container — or GitHub Codespaces. The stack tools are then not needed on the host.
 
 ## 2. Stack
 
@@ -71,12 +83,25 @@ settings, and the language's official style guide.
 **Dev container** (block 7): each pack ships a `.devcontainer/`, with a `devcontainer-lock.json`
 that pins its features. No dev container: delete the folder. Two stacks: merge the packs' dev
 containers into a single `.devcontainer/` at the root — one Dockerfile with both toolchains, and
-both packs' features and mounts — and delete the lock file: the dev container CLI writes a new one
-the first time the container is built (step 6); commit it.
+both packs' features and mounts — and delete the lock file: the first build of the container (end
+of this step) writes a new one; commit it.
 
 **Then, before anything else:** delete `stacks/` — its nested tool configs (a second `biome.json`,
-for example) make the formatter refuse to run — and run `just setup`, so the edit hook and the
-`just` recipes work for the rest of init.
+for example) make the formatter refuse to run — and install the dependencies, so the `just` recipes
+work for the rest of init:
+
+- **No dev container:** `just setup` on the host. The edit hook (`just format`) now works too.
+- **Dev container, and the dev container CLI runs on the host** (Docker running, Node.js for
+  `npx`): start the container with `npx @devcontainers/cli up --workspace-folder .` — its
+  `postCreateCommand` runs `just setup`. From now on, run every stack-tool command inside it with
+  `npx @devcontainers/cli exec --workspace-folder . <command>`: adding the framework, `just fix`,
+  `just check`… The edit hook still runs on the host and fails while the host lacks the stack
+  tools: that is expected; run `just fix` in the container before step 6 instead.
+- **Dev container, but no Docker or no Node.js on the host:** write the init notes file (path
+  above) with the interview answers, the confirmed stack and "resume at step 3: install the
+  dependencies", then stop. Ask the user to open the folder in the container — VS Code with the
+  Dev Containers extension ("Reopen in Container"), or GitHub Codespaces — start `claude` in its
+  terminal and run this workflow again: it resumes here, with every tool available.
 
 **Framework:** if the stack includes one (FastAPI, React, Typer…), add it with its official
 tooling and make sure the `justfile` recipes still cover all the code. If the app needs an entry
@@ -152,16 +177,18 @@ Then:
 
 ## 6. Verify
 
-Run `just setup`, then `just check`. Fix until it passes.
-
-With a dev container and Docker running, also check it from the host with the dev container CLI:
-`npx @devcontainers/cli up --workspace-folder .`, then
-`npx @devcontainers/cli exec --workspace-folder . just check`. No Docker here: say so, and leave
-this check to the first opening of the container.
+Run `just setup`, then `just check`, where the stack tools are: on the host without a dev
+container; inside the container with one — from the host,
+`npx @devcontainers/cli exec --workspace-folder . just check`, or directly in the container's
+terminal. Fix until it passes. A merged
+two-stack container has just written its new `devcontainer-lock.json`: keep it for the commit.
 
 ## 7. Git and GitHub
 
 Show the user the commands below, adapted to the project, and ask for a single confirmation.
+Inside a dev container (resumed run), git works as on the host, but `gh` is not signed in: either
+the user signs in there (`gh auth login`, done by the user), or they run the `gh` and
+`setup-github.sh` commands from a terminal on the host.
 
 1. No repository yet: `git init -b main`.
 2. Commit everything on `main` as `chore: initialize project from Bootstart` — the only commit made
@@ -182,5 +209,7 @@ Show the user the commands below, adapted to the project, and ask for a single c
 
 ## 8. Report
 
-What was set up, how to run it, and the suggested first step: `/feature <first feature>`.
+What was set up, how to run it, and the suggested first step: `/feature <first feature>`. With a
+dev container, remind the user to run Claude Code inside it from now on: on a host without the
+stack tools, the edit hook fails. Delete the init notes file if there is one.
 Do not run the `handoff` workflow here: `docs/HANDOFF.md` was written in step 4 and committed.

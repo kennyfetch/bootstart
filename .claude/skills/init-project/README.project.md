@@ -19,7 +19,7 @@ just check   # lint, type-check and test — what CI runs
 Every tool is preinstalled in the dev container (`.devcontainer/`), and `just setup` runs when it
 is created. Open the folder in VS Code with the Dev Containers extension ("Reopen in Container"),
 or in GitHub Codespaces. Run AI agents inside it — `claude` in the container's terminal — so they
-only see the project. On Windows, clone the project inside WSL rather than on a Windows drive: file
+only see the project and find every tool (on a host without them, Claude Code's edit hook fails). On Windows, clone the project inside WSL rather than on a Windows drive: file
 access is much faster.
 
 ## Development
