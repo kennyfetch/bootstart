@@ -38,5 +38,9 @@ typecheck:
 test *args:
     uv run pytest {{ args }}
 
+# Check installed package licenses against .github/dependency-review-config.yml
+licenses:
+    uv run python scripts/check_licenses.py
+
 # Everything CI runs
-check: lint typecheck test
+check: lint typecheck test licenses

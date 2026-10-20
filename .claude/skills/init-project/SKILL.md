@@ -114,7 +114,7 @@ Then:
 - `docs/SCOPE.md`: from interview block 2.
 - `docs/THIRD_PARTY.md`: fill "Policy" from block 4. For a copyleft project license, move the
   matching copyleft licenses to "Allowed", in the table and in the `allow-licenses` list of
-  `.github/workflows/dependency-review.yml`. Add a row for any asset already used (font, icon…).
+  `.github/dependency-review-config.yml`. Add a row for any asset already used (font, icon…).
 - `docs/DATA.md`: from block 5. No accounts and no personal data: keep the file short and say so,
   so that any later change starts by updating it. Sensitive data: list the impact assessment
   (DPIA) in the open questions of `docs/SCOPE.md`.

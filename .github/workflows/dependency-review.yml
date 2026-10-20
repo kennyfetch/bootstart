@@ -1,6 +1,8 @@
-# Fails a pull request that adds a dependency with a license outside the allow-list of
-# docs/THIRD_PARTY.md, or with a known vulnerability. Free on public repositories; private ones need
-# GitHub Advanced Security, so the job is skipped there (it then reports as passing).
+# Fails a pull request that adds a dependency with a license outside the allow-list, or with a known
+# vulnerability. Policy: .github/dependency-review-config.yml (see docs/THIRD_PARTY.md).
+# Free on public repositories; private ones need GitHub Advanced Security, so the job is skipped
+# there (it then reports as passing). GitHub cannot read uv.lock: Python packages are also checked
+# by `just licenses`, part of `just check`.
 name: Dependency review
 
 on:
@@ -21,7 +23,4 @@ jobs:
 
       - uses: actions/dependency-review-action@v5
         with:
-          # SPDX identifiers: the "Allowed" rows of docs/THIRD_PARTY.md. Keep both in sync.
-          allow-licenses: >-
-            MIT, MIT-0, Apache-2.0, BSD-2-Clause, BSD-3-Clause, ISC, 0BSD, Zlib, Unlicense, CC0-1.0,
-            BlueOak-1.0.0, Python-2.0, PSF-2.0, MPL-2.0, CC-BY-4.0
+          config-file: ./.github/dependency-review-config.yml

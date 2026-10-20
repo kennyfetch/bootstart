@@ -21,15 +21,22 @@ A copyleft project (GPL, AGPL) may move the matching copyleft licenses to "Allow
 
 ## Packages
 
-Checked automatically: on every pull request, the `dependency-review` job
-(`.github/workflows/dependency-review.yml`) fails when a new dependency has a license outside the
-allowed rows above, or a known vulnerability. Keep its `allow-licenses` list in sync with this table.
-An exception for a single package goes in `allow-dependencies-licenses`, with an ADR.
+The single allow-list is `.github/dependency-review-config.yml`: its `allow-licenses` list is the
+"Allowed" rows above — keep both in sync. An exception for a single package goes in its
+`allow-dependencies-licenses` list (`pkg:npm/name`, `pkg:pypi/name`), with an ADR. Two checks use it:
 
-- Licenses the check cannot detect are reported in the job log, not blocked: read it.
-- The check needs a public repository (or GitHub Advanced Security); elsewhere the job is skipped.
-  Check new dependencies by hand instead: `pnpm licenses list --prod`,
-  `uv run --with pip-licenses pip-licenses`.
+- **On every pull request**, the `dependency-review` job (`.github/workflows/dependency-review.yml`)
+  fails when a new dependency — runtime or development, since front-end development dependencies
+  often end up in the shipped bundle — has a license outside the list, or a known vulnerability.
+  It reads `pnpm-lock.yaml` with every transitive dependency, but GitHub cannot read `uv.lock`: for
+  Python it only sees the direct dependencies of `pyproject.toml`. It needs a public repository (or
+  GitHub Advanced Security); elsewhere the job is skipped.
+- **In `just check`** (Python stack), `just licenses` checks every installed package, transitive
+  ones included, locally and in CI, on public and private repositories alike.
+
+Licenses that cannot be determined are reported, not blocked: read the output. On a private
+TypeScript repository, nothing checks automatically: review new dependencies with
+`pnpm licenses list`.
 
 ## Other assets
 

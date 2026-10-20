@@ -96,8 +96,8 @@ command works as on the host and in CI.
   autonomously while seeing only the project, not the rest of the machine.
 - **How:** VS Code with the Dev Containers extension ("Reopen in Container"), GitHub Codespaces, or
   the CLI (`npx @devcontainers/cli up --workspace-folder .`). Claude Code's desktop app runs commands
-  on the host: to use the container, run `claude` in the container's terminal. Its login persists
-  in a volume across rebuilds.
+  on the host: to use the container, run `claude` in the container's terminal. `CLAUDE_CONFIG_DIR`
+  points to a volume, so its login, settings and trusted folders survive rebuilds.
 - **Windows:** Docker Desktop (or Podman Desktop) with WSL 2. Clone projects inside WSL rather than
   on a Windows drive: file access is much faster. `.venv/` and `node_modules/` already live on
   container volumes.
