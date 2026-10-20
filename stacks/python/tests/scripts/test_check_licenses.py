@@ -108,6 +108,9 @@ def test_is_expression_allowed_evaluates_spdx_operators(expression: str, expecte
         "MIT WITH",
         "MIT WITH OR",
         "()",
+        "MIT++",
+        "MIT WITH GPL-3.0-only",
+        "NotARealLicense",
     ],
 )
 def test_is_expression_allowed_rejects_malformed_expressions(expression: str) -> None:
@@ -125,7 +128,7 @@ def test_license_of_prefers_license_expression() -> None:
         declared="BSD",
     )
 
-    assert license_of(package, ALLOWED) == "Apache-2.0"
+    assert license_of(package) == "Apache-2.0"
 
 
 def test_license_of_joins_several_classifiers_with_or() -> None:
@@ -137,13 +140,13 @@ def test_license_of_joins_several_classifiers_with_or() -> None:
         )
     )
 
-    assert license_of(package, ALLOWED) == "Apache-2.0 OR MIT"
+    assert license_of(package) == "Apache-2.0 OR MIT"
 
 
 def test_license_of_turns_unmapped_copyleft_classifier_into_a_license_ref() -> None:
     package = make_package(classifiers=("License :: OSI Approved :: GNU Free Documentation (GPL)",))
 
-    result = license_of(package, ALLOWED)
+    result = license_of(package)
 
     assert result is not None
     assert result.startswith("LicenseRef-")
@@ -156,6 +159,8 @@ def test_license_of_turns_unmapped_copyleft_classifier_into_a_license_ref() -> N
         "MIT",
         "Elastic-2.0",
         "EPL-2.0",
+        "CECILL-2.1",
+        "MS-RL",
         "MIT OR GPL-3.0-only",
         "GPL-2.0-only WITH Classpath-exception-2.0",
     ],
@@ -163,16 +168,16 @@ def test_license_of_turns_unmapped_copyleft_classifier_into_a_license_ref() -> N
 def test_license_of_uses_recognized_spdx_in_the_license_field(declared: str) -> None:
     package = make_package(declared=declared)
 
-    assert license_of(package, ALLOWED) == declared
+    assert license_of(package) == declared
 
 
 @pytest.mark.parametrize(
-    "declared", [None, "", "BSD", "Apache 2.0", "See LICENSE file", "MIT or similar"]
+    "declared", [None, "", "BSD", "Apache 2.0", "See LICENSE file", "MIT or similar", "MIT++"]
 )
 def test_license_of_leaves_free_text_undetermined(declared: str | None) -> None:
     package = make_package(declared=declared)
 
-    assert license_of(package, ALLOWED) is None
+    assert license_of(package) is None
 
 
 # --- check_packages -----------------------------------------------------------------------------
@@ -185,14 +190,24 @@ def test_check_packages_classifies_each_package() -> None:
         make_package("excepted_pkg", expression="GPL-3.0-only"),
         make_package("fine", expression="MIT"),
         make_package("restricted", declared="Elastic-2.0"),
+        make_package("cecill", declared="CECILL-2.1"),
+        make_package("ms-rl", declared="MS-RL"),
+        make_package("double-plus", expression="MIT++"),
         make_package("broken", expression="MIT) AND GPL-3.0-only"),
         make_package("mystery", declared="See LICENSE file"),
     ]
 
     report = check_packages(packages, policy, project_name="My_Project")
 
-    assert report.not_allowed == ["restricted (Elastic-2.0)"]
-    assert report.malformed == ["broken (MIT) AND GPL-3.0-only): unexpected ')'"]
+    assert report.not_allowed == [
+        "restricted (Elastic-2.0)",
+        "cecill (CECILL-2.1)",
+        "ms-rl (MS-RL)",
+    ]
+    assert sorted(entry.split(":")[0] for entry in report.malformed) == [
+        "broken (MIT) AND GPL-3.0-only)",
+        "double-plus (MIT++)",
+    ]
     assert report.unknown == ["mystery"]
     assert report.has_failures
 
@@ -204,3 +219,9 @@ def test_check_packages_passes_with_only_unknown_licenses() -> None:
 
     assert report.unknown == ["mystery"]
     assert not report.has_failures
+
+
+def test_license_of_returns_the_canonical_spelling_of_the_license_field() -> None:
+    package = make_package(declared="mit or apache-2.0")
+
+    assert license_of(package) == "MIT OR Apache-2.0"

@@ -7,6 +7,10 @@ workflow: `.github/dependency-review-config.yml`.
 Each distribution ends up allowed, not allowed, malformed (an expression that is not valid SPDX) or
 undetermined. Not allowed and malformed fail the check. Undetermined is reported without failing,
 as in dependency-review: review it by hand and record the outcome in docs/THIRD_PARTY.md.
+
+SPDX validation comes from `packaging.licenses`, the PyPA implementation used for package metadata:
+it knows the full SPDX license and exception lists, so every valid identifier is compared with the
+allow-list, and anything else is either malformed or undetermined.
 """
 
 import re
@@ -19,6 +23,7 @@ from pathlib import Path
 from typing import cast
 
 import yaml
+from packaging.licenses import InvalidLicenseExpression, canonicalize_license_expression
 
 CONFIG_RELATIVE_PATH = Path(".github") / "dependency-review-config.yml"
 EXIT_FAILED = 1
@@ -27,11 +32,6 @@ EXIT_BAD_CONFIG = 2
 SPDX_TOKEN = re.compile(r"\(|\)|[^\s()]+")
 OPERATORS = frozenset({"AND", "OR", "WITH"})
 PARENTHESES = frozenset({"(", ")"})
-# SPDX families never in the default allow-list: copyleft, non-commercial, source-available.
-RESTRICTIVE_SPDX_ID = re.compile(
-    r"^(A?L?GPL|MPL-1|EPL|EUPL|CDDL|CPL|OSL|SSPL|BUSL|Elastic|PolyForm|CC-BY-(NC|ND|SA))",
-    re.IGNORECASE,
-)
 # License classifiers that look restrictive even when they are not in SPDX_BY_CLASSIFIER.
 RESTRICTIVE_CLASSIFIER = re.compile(r"GPL|SSPL|BUSL|Commons Clause|Non-?Commercial", re.IGNORECASE)
 
@@ -151,13 +151,26 @@ def _string_list(config: dict[str, object], key: str) -> list[str]:
     return cast("list[str]", items)
 
 
+def canonical_expression(expression: str) -> str:
+    """Validate an SPDX expression against the SPDX lists and return its canonical spelling.
+
+    Raises:
+        LicenseExpressionError: If the syntax, a license identifier or an exception is invalid.
+    """
+    try:
+        return str(canonicalize_license_expression(expression))
+    except InvalidLicenseExpression as error:
+        raise LicenseExpressionError(str(error)) from error
+
+
 def is_expression_allowed(expression: str, allowed_licenses: frozenset[str]) -> bool:
     """Evaluate an SPDX expression: `A OR B` needs one allowed side, `A AND B` needs both.
 
     Raises:
-        LicenseExpressionError: If the expression is not valid SPDX syntax.
+        LicenseExpressionError: If the expression is not valid SPDX.
     """
-    return _ExpressionParser(SPDX_TOKEN.findall(expression), allowed_licenses).parse()
+    tokens = SPDX_TOKEN.findall(canonical_expression(expression))
+    return _ExpressionParser(tokens, allowed_licenses).parse()
 
 
 class _ExpressionParser:
@@ -218,11 +231,12 @@ class _ExpressionParser:
         return symbol.rstrip("+").lower() in self.allowed_licenses
 
 
-def license_of(package: PackageLicense, allowed_licenses: frozenset[str]) -> str | None:
+def license_of(package: PackageLicense) -> str | None:
     """Best SPDX expression for a package: License-Expression, classifiers, then License.
 
-    The free-form License field is used only when every identifier in it is a recognized SPDX
-    identifier (allowed, or from a restrictive family); text such as "BSD" stays undetermined.
+    License-Expression must be SPDX by specification, so it is returned as is and validated later
+    (invalid means malformed). The free-form License field is used only when it is a valid SPDX
+    expression; free text such as "BSD" or "See LICENSE" stays undetermined.
     """
     if package.expression:
         return package.expression
@@ -233,9 +247,12 @@ def license_of(package: PackageLicense, allowed_licenses: frozenset[str]) -> str
         # Several license classifiers mean "any of these" (dual licensing).
         return " OR ".join(from_classifiers)
     declared = (package.declared or "").strip()
-    if declared and _is_recognized_spdx(declared, allowed_licenses):
-        return declared
-    return None
+    if not declared:
+        return None
+    try:
+        return canonical_expression(declared)
+    except LicenseExpressionError:
+        return None
 
 
 def _classifier_license(classifier: str) -> str | None:
@@ -247,21 +264,6 @@ def _classifier_license(classifier: str) -> str | None:
     return None
 
 
-def _is_recognized_spdx(text: str, allowed_licenses: frozenset[str]) -> bool:
-    tokens = SPDX_TOKEN.findall(text)
-    identifiers = [
-        token
-        for index, token in enumerate(tokens)
-        if token not in PARENTHESES
-        and token.upper() not in OPERATORS
-        and (index == 0 or tokens[index - 1].upper() != "WITH")  # skip exception names
-    ]
-    return bool(identifiers) and all(
-        identifier.rstrip("+").lower() in allowed_licenses or RESTRICTIVE_SPDX_ID.match(identifier)
-        for identifier in identifiers
-    )
-
-
 def check_packages(packages: Iterable[PackageLicense], policy: Policy, project_name: str) -> Report:
     """Classify every package except the project itself and the excepted ones."""
     report = Report()
@@ -269,7 +271,7 @@ def check_packages(packages: Iterable[PackageLicense], policy: Policy, project_n
     for package in packages:
         if normalize_name(package.name) in skipped:
             continue
-        expression = license_of(package, policy.allowed_licenses)
+        expression = license_of(package)
         if expression is None:
             report.unknown.append(package.name)
             continue
