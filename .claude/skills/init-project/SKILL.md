@@ -14,13 +14,26 @@ the remaining steps without interrupting the user unless something fails or a st
 
 ## 1. Interview
 
-1. Project name and one-sentence purpose (skip what the input already gives).
-2. Nature: web front-end, full-stack web, API, CLI, data/automation, library, desktop, mobile, game, other.
-3. Where it runs, and any hard constraint: platform, performance, offline, hosting, existing code.
-4. Solo or team? Team means at least one other person with write access who reviews PRs; alone,
-   choose solo (switch later with `scripts/setup-github.sh team`). Public or private repository?
-   On GitHub Free, a private repository gets no branch protection. License: MIT, Apache-2.0, or
-   none (proprietary).
+Skip what the input already gives. "Not decided yet" is a valid answer: it becomes an open question
+in the matching document.
+
+1. **Project:** name and one-sentence purpose.
+2. **First version** (`docs/SCOPE.md`): target users; the main journey, from opening the app to the
+   result they came for; the three most important features; what waits for later; what would make
+   the first version a success.
+3. **Nature:** web front-end, full-stack web, API, CLI, data/automation, library, desktop, mobile,
+   game, other. Where it runs, and any hard constraint: platform, performance, offline, hosting,
+   existing code.
+4. **Use and licenses** (`docs/THIRD_PARTY.md`): commercial use planned? Distributed how —
+   internal tool, online service, distributed app or package, open source? Project license:
+   MIT, Apache-2.0, a copyleft license, or none (proprietary).
+5. **Data and access** (`docs/DATA.md`): public or internal? User accounts, and which roles? Personal
+   data collected (which), and any sensitive data (health, children, …)? How long it is kept?
+   Hosting region and third-party services that would receive data (email, analytics, payment…)?
+6. **Team and repository:** solo or team? Team means at least one other person with write access
+   who reviews PRs; alone, choose solo (switch later with `scripts/setup-github.sh team`). Public
+   or private repository? On GitHub Free, a private repository gets no branch protection and no
+   automatic license check.
 
 ## 2. Stack
 
@@ -78,10 +91,26 @@ Then:
 - `AGENTS.md`, section "Project": name, purpose, stack.
 - `README.md`: replace with `.claude/skills/init-project/README.project.md`, filled in.
 - `docs/decisions/0001-stack-choice.md`: ADR from the interview and step 2 (use the `adr` workflow).
+  It also records where the project comes from, so template fixes can be traced to it later:
+  - a line `Created from <template>@<commit> on <date>`. With a GitHub remote:
+    `gh repo view --json templateRepository,createdAt` gives the template and the creation date;
+    the template commit at that date is
+    `gh api "repos/<template>/commits?sha=main&until=<createdAt>&per_page=1" --jq '.[0].sha'`.
+    Cloned from the template itself: `git rev-parse HEAD` before the initial commit. Otherwise:
+    `unknown`;
+  - the init options: stack, solo or team, repository visibility, project license, commercial use
+    and distribution, personal data (yes or no).
 - `docs/ARCHITECTURE.md`: fill "Purpose", "Context" and "Constraints" from the interview, and
   "Module map" with the folders just created.
+- `docs/SCOPE.md`: from interview block 2.
+- `docs/THIRD_PARTY.md`: fill "Policy" from block 4. For a copyleft project license, move the
+  matching copyleft licenses to "Allowed", in the table and in the `allow-licenses` list of
+  `.github/workflows/dependency-review.yml`. Add a row for any asset already used (font, icon…).
+- `docs/DATA.md`: from block 5. No accounts and no personal data: keep the file short and say so,
+  so that any later change starts by updating it. Sensitive data: list the impact assessment
+  (DPIA) in the open questions of `docs/SCOPE.md`.
 - License:
-  - MIT or Apache-2.0: create `LICENSE` with the standard text, current year, holder from
+  - MIT, Apache-2.0 or a copyleft license: create `LICENSE` with the standard text, current year, holder from
     `git config user.name`; in the README's "License" section, name the license and link `LICENSE`.
   - None: create no `LICENSE` file; the README's "License" section reads
     `Proprietary. All rights reserved.` with no link.
@@ -122,6 +151,7 @@ Show the user the commands below, adapted to the project, and ask for a single c
 3. No `origin` remote yet: `gh repo create <kebab-name> --private|--public --source . --push`.
    Otherwise: `git push`.
 4. Apply repository settings and branch protection: `bash scripts/setup-github.sh solo` (or `team`).
+   Public repository: also require the license check — `bash scripts/setup-github.sh solo dependency-review`.
    On Windows, run it with Git Bash — Claude Code's Bash tool, or
    `& "$env:ProgramFiles\Git\bin\bash.exe" scripts/setup-github.sh solo` from PowerShell — never
    `bash` from PowerShell, which may start WSL. A private repository on GitHub Free cannot have

@@ -15,6 +15,9 @@ docs/
   ARCHITECTURE.md      One-page system overview (filled per project)
   HANDOFF.md           Current state and next steps, for resuming work
   STACKS.md            Stack choice by project nature + the stack contract
+  SCOPE.md             First version: users, main journey, priorities, success criteria
+  DATA.md              Personal data, roles and permissions, GDPR checklist
+  THIRD_PARTY.md       License policy and register of third-party assets
   decisions/           Architecture Decision Records (ADRs)
 .claude/
   settings.json        Permissions, read exclusions, auto-format hook
@@ -103,7 +106,8 @@ winget install --id pnpm.pnpm -e               # TypeScript stack
 - `just selftest` runs setup and every check of each stack pack locally; the `Template self-test`
   workflow does the same in CI.
 - The template's own `check` job has nothing to check, so its branch protection also requires the
-  pack jobs: `bash scripts/setup-github.sh solo "stack (python)" "stack (typescript)"`.
+  pack jobs and the license check:
+  `bash scripts/setup-github.sh solo "stack (python)" "stack (typescript)" dependency-review`.
 - To add a stack pack: create `stacks/<name>/` following the stack contract in `docs/STACKS.md`,
   then add it to the `selftest` recipe, the self-test workflow matrix, `.github/dependabot.yml`,
   the table in `docs/STACKS.md` and the required checks above.

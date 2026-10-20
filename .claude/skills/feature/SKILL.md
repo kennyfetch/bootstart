@@ -13,7 +13,9 @@ Task: $ARGUMENTS
    if it exists). Read `docs/ARCHITECTURE.md` only if the task spans modules.
    Locate the relevant code by searching; open only the files you need.
 2. **Clarify.** Restate the expected behavior as 2–5 acceptance criteria. If anything is ambiguous,
-   ask before writing code. List any assumption you make.
+   ask before writing code. List any assumption you make. Check the task against `docs/SCOPE.md`:
+   if it is listed under "Not in V1" or matches no V1 feature, say so before starting.
+   If it collects personal data, touches accounts or permissions, read `docs/DATA.md` first.
 3. **Branch.** From an up-to-date `main`: `git switch -c <type>/<short-slug>` (`feat/…`, `fix/…`).
    Skip if already on a dedicated branch for this task. A bug in this branch's own unmerged work is
    fixed on the same branch.
@@ -27,5 +29,6 @@ Task: $ARGUMENTS
 7. **Verify.** `just check` must pass. Fix the cause of any failure; never weaken or skip a test
    to get green.
 8. **Docs.** Update `docs/ARCHITECTURE.md` if the structure changed, `.env.example` if a setting was
-   added. If a significant choice was made, run the `adr` workflow.
+   added, `docs/DATA.md` if personal data or permissions changed, `docs/THIRD_PARTY.md` if an
+   asset (font, image, dataset…) was added. If a significant choice was made, run the `adr` workflow.
 9. **Report** in a few lines: what changed, how it is tested, anything left undone. Suggest `ship`.
