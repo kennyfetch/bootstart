@@ -14,6 +14,14 @@ just setup   # install dependencies
 just check   # lint, type-check and test — what CI runs
 ```
 
+### Dev container
+
+Every tool is preinstalled in the dev container (`.devcontainer/`), and `just setup` runs when it
+is created. Open the folder in VS Code with the Dev Containers extension ("Reopen in Container"),
+or in GitHub Codespaces. Run AI agents inside it — `claude` in the container's terminal — so they
+only see the project. On Windows, clone the project inside WSL rather than on a Windows drive: file
+access is much faster.
+
 ## Development
 
 | Command | Effect |

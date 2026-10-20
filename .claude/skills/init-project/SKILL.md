@@ -34,6 +34,10 @@ in the matching document.
    who reviews PRs; alone, choose solo (switch later with `scripts/setup-github.sh team`). Public
    or private repository? On GitHub Free, a private repository gets no branch protection and no
    automatic license check.
+7. **Dev container:** work inside a container that holds every tool? Recommended for a team (same
+   environment for everyone) or to let AI agents work autonomously, isolated from the rest of the
+   machine. Not suited to mobile apps with an emulator, desktop GUI apps or games. Needs Docker
+   (Docker Desktop or Podman) locally, or GitHub Codespaces.
 
 ## 2. Stack
 
@@ -63,6 +67,10 @@ Derive three names: display name (`My Tool`), `kebab-case` (`my-tool`), `snake_c
 the closest pack as a model for structure. Use the current stable version of each tool, strict
 settings, and the language's official style guide.
 
+**Dev container** (block 7): each pack ships a `.devcontainer/`. No dev container: delete it.
+Two stacks: merge the packs' dev containers into a single `.devcontainer/` at the root — one
+Dockerfile with both toolchains, and both packs' features and mounts.
+
 **Then, before anything else:** delete `stacks/` — its nested tool configs (a second `biome.json`,
 for example) make the formatter refuse to run — and run `just setup`, so the edit hook and the
 `just` recipes work for the rest of init.
@@ -89,7 +97,8 @@ Then:
 ## 4. Documents
 
 - `AGENTS.md`, section "Project": name, purpose, stack.
-- `README.md`: replace with `.claude/skills/init-project/README.project.md`, filled in.
+- `README.md`: replace with `.claude/skills/init-project/README.project.md`, filled in. Without a
+  dev container, drop its "Dev container" section.
 - `docs/decisions/0001-stack-choice.md`: ADR from the interview and step 2 (use the `adr` workflow).
   It also records where the project comes from, so template fixes can be traced to it later:
   - a line `Created from <template>@<commit> on <date>`. With a GitHub remote:
@@ -98,7 +107,7 @@ Then:
     `gh api "repos/<template>/commits?sha=main&until=<createdAt>&per_page=1" --jq '.[0].sha'`.
     Cloned from the template itself: `git rev-parse HEAD` before the initial commit. Otherwise:
     `unknown`;
-  - the init options: stack, solo or team, repository visibility, project license, commercial use
+  - the init options: stack, dev container, solo or team, repository visibility, project license, commercial use
     and distribution, personal data (yes or no).
 - `docs/ARCHITECTURE.md`: fill "Purpose", "Context" and "Constraints" from the interview, and
   "Module map" with the folders just created.
@@ -140,6 +149,11 @@ Then:
 ## 6. Verify
 
 Run `just setup`, then `just check`. Fix until it passes.
+
+With a dev container and Docker running, also check it from the host with the dev container CLI:
+`npx @devcontainers/cli up --workspace-folder .`, then
+`npx @devcontainers/cli exec --workspace-folder . just check`. No Docker here: say so, and leave
+this check to the first opening of the container.
 
 ## 7. Git and GitHub
 

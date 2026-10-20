@@ -1,0 +1,22 @@
+{
+  "name": "Project Name",
+  "build": { "dockerfile": "Dockerfile" },
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": { "version": "lts" },
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/anthropics/devcontainer-features/claude-code:1.0": {}
+  },
+  "overrideFeatureInstallOrder": [
+    "ghcr.io/devcontainers/features/node",
+    "ghcr.io/anthropics/devcontainer-features/claude-code"
+  ],
+  "mounts": [
+    "source=venv-${devcontainerId},target=${containerWorkspaceFolder}/.venv,type=volume",
+    "source=claude-code-config-${devcontainerId},target=/home/vscode/.claude,type=volume"
+  ],
+  "containerEnv": { "UV_LINK_MODE": "copy", "UV_PYTHON_PREFERENCE": "only-managed" },
+  "postCreateCommand": "sudo chown vscode:vscode .venv && just setup",
+  "customizations": {
+    "vscode": { "extensions": ["ms-python.python", "charliermarsh.ruff"] }
+  }
+}

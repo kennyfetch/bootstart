@@ -48,3 +48,22 @@ jobs:
 
       - run: just setup
       - run: just check
+
+  # Builds each pack's dev container (its postCreateCommand runs `just setup`) and runs
+  # `just check` inside, so the container stays usable as the packs evolve.
+  devcontainer:
+    name: devcontainer (${{ matrix.stack }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        stack: [python, typescript]
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: devcontainers/ci@v0.3
+        with:
+          subFolder: stacks/${{ matrix.stack }}
+          runCmd: just check
+          push: never

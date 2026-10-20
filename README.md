@@ -25,7 +25,7 @@ docs/
   agents/reviewer.md   Independent reviewer subagent
 .github/               CI, template self-test, Dependabot, PR and issue templates, CODEOWNERS
 scripts/setup-github.sh  Repository settings + branch protection (solo or team)
-stacks/                Stack packs (python, typescript), removed by init-project
+stacks/                Stack packs (python, typescript), each with a dev container; removed by init-project
 ```
 
 ## Prerequisites
@@ -86,6 +86,25 @@ winget install --id pnpm.pnpm -e               # TypeScript stack
 - One task per session; `/handoff` then `/clear` keeps the context small.
 - Small files and functions mean less to read for every change.
 
+## Dev containers
+
+`/init-project` offers to keep the pack's dev container (`.devcontainer/`): an Ubuntu container
+with the stack's tools, `gh` and Claude Code, where `just setup` runs on creation and every `just`
+command works as on the host and in CI.
+
+- **Why:** the same environment for everyone, no Windows quirks, and AI agents that can work
+  autonomously while seeing only the project, not the rest of the machine.
+- **How:** VS Code with the Dev Containers extension ("Reopen in Container"), GitHub Codespaces, or
+  the CLI (`npx @devcontainers/cli up --workspace-folder .`). Claude Code's desktop app runs commands
+  on the host: to use the container, run `claude` in the container's terminal. Its login persists
+  in a volume across rebuilds.
+- **Windows:** Docker Desktop (or Podman Desktop) with WSL 2. Clone projects inside WSL rather than
+  on a Windows drive: file access is much faster. `.venv/` and `node_modules/` already live on
+  container volumes.
+- **Not for:** mobile apps with an emulator, desktop GUI apps, games.
+- The container limits what an agent can reach on disk; it does not filter the network. For
+  stricter isolation, see Anthropic's reference dev container, which adds a firewall.
+
 ## Solo, then team
 
 - **Solo:** `bash scripts/setup-github.sh solo`. Pull requests and green CI are required, no approval
@@ -106,8 +125,8 @@ winget install --id pnpm.pnpm -e               # TypeScript stack
 - `just selftest` runs setup and every check of each stack pack locally; the `Template self-test`
   workflow does the same in CI.
 - The template's own `check` job has nothing to check, so its branch protection also requires the
-  pack jobs and the license check:
-  `bash scripts/setup-github.sh solo "stack (python)" "stack (typescript)" dependency-review`.
+  pack jobs, their dev containers and the license check:
+  `bash scripts/setup-github.sh solo "stack (python)" "stack (typescript)" "devcontainer (python)" "devcontainer (typescript)" dependency-review`.
 - To add a stack pack: create `stacks/<name>/` following the stack contract in `docs/STACKS.md`,
   then add it to the `selftest` recipe, the self-test workflow matrix, `.github/dependabot.yml`,
   the table in `docs/STACKS.md` and the required checks above.

@@ -74,3 +74,6 @@ Any stack — shipped or created for a project — must provide:
 5. An ecosystem entry in `.github/dependabot.yml`.
 6. Its ignore patterns in `.gitignore`.
 7. For a reusable pack only: an example source file and test that demonstrate `docs/CONVENTIONS.md`.
+8. A `.devcontainer/` (required for a reusable pack, optional for a project) that installs the
+   toolchain and runs `just setup` when created, so `just check` passes inside it. Generated
+   folders (`.venv/`, `node_modules/`) live on a container volume, never shared with the host.
