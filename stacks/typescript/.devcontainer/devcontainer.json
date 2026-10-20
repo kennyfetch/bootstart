@@ -1,0 +1,22 @@
+{
+  "name": "Project Name",
+  "build": { "dockerfile": "Dockerfile" },
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": { "version": "24" },
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/anthropics/devcontainer-features/claude-code:1.0": {}
+  },
+  "overrideFeatureInstallOrder": [
+    "ghcr.io/devcontainers/features/node",
+    "ghcr.io/anthropics/devcontainer-features/claude-code"
+  ],
+  "mounts": [
+    "source=node-modules-${devcontainerId},target=${containerWorkspaceFolder}/node_modules,type=volume",
+    "source=claude-code-config-${devcontainerId},target=/home/vscode/.claude,type=volume"
+  ],
+  "containerEnv": { "COREPACK_ENABLE_DOWNLOAD_PROMPT": "0" },
+  "postCreateCommand": "sudo chown vscode:vscode node_modules && corepack enable && just setup",
+  "customizations": {
+    "vscode": { "extensions": ["biomejs.biome", "vitest.explorer"] }
+  }
+}
