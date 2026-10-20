@@ -14,8 +14,11 @@
     "source=node-modules-${devcontainerId},target=${containerWorkspaceFolder}/node_modules,type=volume",
     "source=claude-code-config-${devcontainerId},target=/home/vscode/.claude,type=volume"
   ],
-  "containerEnv": { "COREPACK_ENABLE_DOWNLOAD_PROMPT": "0" },
-  "postCreateCommand": "sudo chown vscode:vscode node_modules && corepack enable && pnpm config set store-dir /home/vscode/.local/share/pnpm/store && just setup",
+  "containerEnv": {
+    "CLAUDE_CONFIG_DIR": "/home/vscode/.claude",
+    "COREPACK_ENABLE_DOWNLOAD_PROMPT": "0"
+  },
+  "postCreateCommand": "sudo chown vscode:vscode node_modules /home/vscode/.claude && corepack enable && pnpm config set store-dir /home/vscode/.local/share/pnpm/store && just setup",
   "customizations": {
     "vscode": { "extensions": ["biomejs.biome", "vitest.explorer"] }
   }

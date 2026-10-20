@@ -1,0 +1,31 @@
+# Third-party package policy: the single allow-list for the whole repository.
+# Read by .github/workflows/dependency-review.yml (pull requests) and by the Python stack's
+# `just licenses` check (installed packages, because GitHub's dependency graph cannot read uv.lock).
+# Human-readable policy and the reasons behind it: docs/THIRD_PARTY.md. Keep both in sync.
+
+# SPDX identifiers: the "Allowed" rows of docs/THIRD_PARTY.md.
+allow-licenses:
+  - MIT
+  - MIT-0
+  - Apache-2.0
+  - BSD-2-Clause
+  - BSD-3-Clause
+  - ISC
+  - 0BSD
+  - Zlib
+  - Unlicense
+  - CC0-1.0
+  - BlueOak-1.0.0
+  - Python-2.0
+  - PSF-2.0
+  - MPL-2.0
+  - CC-BY-4.0
+
+# Exceptions for single packages, as package URLs (pkg:npm/name, pkg:pypi/name), each with an ADR.
+allow-dependencies-licenses: []
+
+# Development dependencies count too: in a front-end, many of them end up in the shipped bundle.
+fail-on-scopes:
+  - runtime
+  - development
+  - unknown
