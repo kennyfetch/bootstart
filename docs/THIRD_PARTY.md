@@ -34,7 +34,8 @@ The single allow-list is `.github/dependency-review-config.yml`: its `allow-lice
 - **In `just check`** (Python stack), `just licenses` checks every installed package, transitive
   ones included, locally and in CI, on public and private repositories alike.
 
-Licenses that cannot be determined are reported, not blocked: read the output. On a private
+Licenses that cannot be determined are reported, not blocked: read the output. A malformed license
+expression fails `just licenses`: review the package and add an exception if it is acceptable. On a private
 TypeScript repository, nothing checks automatically: review new dependencies with
 `pnpm licenses list`.
 

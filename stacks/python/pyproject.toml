@@ -39,13 +39,17 @@ select = [
 "tests/**" = ["S101", "PLR2004"]
 
 [tool.pyright]
-include = ["src", "tests"]
+include = ["src", "scripts", "tests"]
+# Lets tests import the tooling scripts (scripts/check_licenses.py) by module name. Setting
+# extraPaths stops Pyright from adding src/ on its own, so it is listed too.
+extraPaths = ["src", "scripts"]
 typeCheckingMode = "strict"
 venvPath = "."
 venv = ".venv"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+pythonpath = ["scripts"]
 addopts = [
   "--import-mode=importlib",
   "--strict-markers",
@@ -62,5 +66,7 @@ dev = [
     "pyright>=1.1.414",
     "pytest>=9.1.1",
     "pytest-cov>=7.1.0",
+    "pyyaml>=6.0.3",
     "ruff>=0.17.1",
+    "types-pyyaml>=6.0.12.20260906",
 ]
