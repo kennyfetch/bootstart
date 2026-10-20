@@ -23,7 +23,8 @@ _The two or three most important flows, step by step (e.g. "an order is placed")
 
 ## Constraints
 
-_Performance, security, privacy, platforms, offline use, budget — whatever shapes the design._
+_Performance, security, privacy (details in `DATA.md`), platforms, offline use, budget — whatever
+shapes the design._
 
 ## Key decisions
 

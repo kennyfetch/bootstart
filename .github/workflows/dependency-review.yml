@@ -1,0 +1,27 @@
+# Fails a pull request that adds a dependency with a license outside the allow-list of
+# docs/THIRD_PARTY.md, or with a known vulnerability. Free on public repositories; private ones need
+# GitHub Advanced Security, so the job is skipped there (it then reports as passing).
+name: Dependency review
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  dependency-review:
+    # Job name usable as a required status check: setup-github.sh <mode> dependency-review
+    name: dependency-review
+    if: ${{ !github.event.repository.private }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/dependency-review-action@v5
+        with:
+          # SPDX identifiers: the "Allowed" rows of docs/THIRD_PARTY.md. Keep both in sync.
+          allow-licenses: >-
+            MIT, MIT-0, Apache-2.0, BSD-2-Clause, BSD-3-Clause, ISC, 0BSD, Zlib, Unlicense, CC0-1.0,
+            BlueOak-1.0.0, Python-2.0, PSF-2.0, MPL-2.0, CC-BY-4.0

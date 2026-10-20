@@ -33,6 +33,9 @@ Details in [docs/CONVENTIONS.md](docs/CONVENTIONS.md).
 
 - [Architecture](docs/ARCHITECTURE.md) — how the system is organized
 - [Conventions](docs/CONVENTIONS.md) — naming, comments, tests, git
+- [Scope](docs/SCOPE.md) — what the first version does, and what waits
+- [Data and access](docs/DATA.md) — personal data, roles, GDPR
+- [Third-party licenses](docs/THIRD_PARTY.md) — license policy and assets
 - [Decisions](docs/decisions/) — why things are the way they are
 - [Handoff](docs/HANDOFF.md) — current state and next steps
 - [AGENTS.md](AGENTS.md) — instructions for AI coding agents

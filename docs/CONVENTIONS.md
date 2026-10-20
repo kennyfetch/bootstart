@@ -64,6 +64,8 @@ Other languages: follow the official style guide of the language and record it i
 - Prefer specific error types over generic ones; error messages say what failed and with which value.
 - Configuration comes from environment variables, listed with safe defaults in `.env.example`.
 - Never log secrets, tokens or personal data.
+- Personal data is collected only if listed in `docs/DATA.md`, with its purpose and retention.
+- Permissions are checked on the server side, and each one has a test for the forbidden case.
 
 ## 6. Tests
 
@@ -94,6 +96,8 @@ Other languages: follow the official style guide of the language and record it i
 - Prefer the standard library, then well-maintained, widely used packages.
 - Every new dependency is justified in the PR description; a framework-level one gets an ADR.
 - Versions are locked by the lockfile, which is committed and never edited by hand.
+- Licenses follow `docs/THIRD_PARTY.md`: the `dependency-review` check enforces it for packages;
+  other assets (fonts, images, datasets, models) are recorded there by hand.
 
 ## 9. Review checklist
 
@@ -105,5 +109,7 @@ Used by humans and by the `review` workflow. Style is not reviewed: tools handle
 - [ ] Are errors handled at the right level, without silent failures?
 - [ ] Any secret, credential, personal data or debug leftover?
 - [ ] Any input from outside the system used without validation?
+- [ ] New personal data or permission: listed in `docs/DATA.md`, with a test for the forbidden case?
+- [ ] New dependency or asset: license allowed by `docs/THIRD_PARTY.md`, asset recorded there?
 - [ ] Is anything duplicated that already exists in the codebase?
 - [ ] Are docs, ADRs and `.env.example` updated if needed?

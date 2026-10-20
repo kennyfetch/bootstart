@@ -45,7 +45,9 @@ Every task goes through `just` — the same commands run locally, in hooks and i
 3. Small, focused changes: one concern per PR, which squash merge turns into one commit on `main`.
 4. Never commit to `main`. Branch as `<type>/<short-slug>` (e.g. `feat/user-login`).
 5. Commit messages follow Conventional Commits (`feat: …`, `fix: …`).
-6. No new dependency without a stated reason; a significant one gets an ADR.
+6. No new dependency or third-party asset without a stated reason and a license allowed by
+   `docs/THIRD_PARTY.md` (assets get a row there); a significant dependency gets an ADR.
+   Personal data and permissions follow `docs/DATA.md`.
 7. Never read, print or commit secrets. `.env` and `.env.*` files are off-limits, except
    `.env.example`, which documents every variable.
 8. Never edit lockfiles or generated files by hand.
