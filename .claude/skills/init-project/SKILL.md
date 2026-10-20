@@ -33,7 +33,8 @@ in the matching document.
 6. **Team and repository:** solo or team? Team means at least one other person with write access
    who reviews PRs; alone, choose solo (switch later with `scripts/setup-github.sh team`). Public
    or private repository? On GitHub Free, a private repository gets no branch protection and no
-   automatic license check.
+   `dependency-review` license check on pull requests (the Python stack's `just licenses` still
+   runs everywhere).
 7. **Dev container:** work inside a container that holds every tool? Recommended for a team (same
    environment for everyone) or to let AI agents work autonomously, isolated from the rest of the
    machine. Not suited to mobile apps with an emulator, desktop GUI apps or games. Needs Docker
@@ -67,9 +68,11 @@ Derive three names: display name (`My Tool`), `kebab-case` (`my-tool`), `snake_c
 the closest pack as a model for structure. Use the current stable version of each tool, strict
 settings, and the language's official style guide.
 
-**Dev container** (block 7): each pack ships a `.devcontainer/`. No dev container: delete it.
-Two stacks: merge the packs' dev containers into a single `.devcontainer/` at the root — one
-Dockerfile with both toolchains, and both packs' features and mounts.
+**Dev container** (block 7): each pack ships a `.devcontainer/`, with a `devcontainer-lock.json`
+that pins its features. No dev container: delete the folder. Two stacks: merge the packs' dev
+containers into a single `.devcontainer/` at the root — one Dockerfile with both toolchains, and
+both packs' features and mounts — and delete the lock file: the dev container CLI writes a new one
+the first time the container is built (step 6); commit it.
 
 **Then, before anything else:** delete `stacks/` — its nested tool configs (a second `biome.json`,
 for example) make the formatter refuse to run — and run `just setup`, so the edit hook and the
@@ -91,7 +94,8 @@ Then:
 - `.github/dependabot.yml`: replace the `stacks/*` entries and their header comment with one entry
   per stack directory — `directory: /` for a single stack, one per folder for two stacks — with the
   stack's ecosystem (`uv`, `npm`, `cargo`, `gomod`…), the same schedule and grouping, and the
-  `ignore` rules of the replaced entry with the same ecosystem.
+  `ignore` rules of the replaced entry with the same ecosystem. Point the `devcontainers` entry at
+  `/`, or remove it if there is no dev container.
 - `.gitignore`: make sure the stack's patterns are present.
 
 ## 4. Documents
@@ -165,7 +169,8 @@ Show the user the commands below, adapted to the project, and ask for a single c
 3. No `origin` remote yet: `gh repo create <kebab-name> --private|--public --source . --push`.
    Otherwise: `git push`.
 4. Apply repository settings and branch protection: `bash scripts/setup-github.sh solo` (or `team`).
-   Public repository: also require the license check — `bash scripts/setup-github.sh solo dependency-review`.
+   Public repository: also require the license check by adding `dependency-review` after the mode:
+   `bash scripts/setup-github.sh solo dependency-review` (or `team dependency-review`).
    On Windows, run it with Git Bash — Claude Code's Bash tool, or
    `& "$env:ProgramFiles\Git\bin\bash.exe" scripts/setup-github.sh solo` from PowerShell — never
    `bash` from PowerShell, which may start WSL. A private repository on GitHub Free cannot have

@@ -1,8 +1,8 @@
 """Check the license of every installed Python distribution against the project's allow-list.
 
-GitHub's dependency graph does not read uv.lock, so it misses transitive Python dependencies. This
-script checks the installed environment instead, using the same allow-list as the dependency-review
-workflow: `.github/dependency-review-config.yml`.
+The dependency-review workflow checks pull requests, but only on public repositories. This script
+checks the installed environment, transitive dependencies included, locally and on any repository,
+using the same allow-list: `.github/dependency-review-config.yml`.
 
 Each distribution ends up allowed, not allowed, malformed (an expression that is not valid SPDX) or
 undetermined. Not allowed and malformed fail the check. Undetermined is reported without failing,
@@ -77,7 +77,7 @@ SPDX_BY_CLASSIFIER = {
 
 
 class LicenseExpressionError(ValueError):
-    """A license expression that does not follow the SPDX syntax."""
+    """A license expression that is not valid SPDX: bad syntax, unknown license or exception."""
 
 
 @dataclass(frozen=True)

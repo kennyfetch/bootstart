@@ -28,11 +28,12 @@ The single allow-list is `.github/dependency-review-config.yml`: its `allow-lice
 - **On every pull request**, the `dependency-review` job (`.github/workflows/dependency-review.yml`)
   fails when a new dependency — runtime or development, since front-end development dependencies
   often end up in the shipped bundle — has a license outside the list, or a known vulnerability.
-  It reads `pnpm-lock.yaml` with every transitive dependency, but GitHub cannot read `uv.lock`: for
-  Python it only sees the direct dependencies of `pyproject.toml`. It needs a public repository (or
-  GitHub Advanced Security); elsewhere the job is skipped.
+  It reads `pnpm-lock.yaml` and `uv.lock`, transitive dependencies included (for `uv.lock`,
+  observed in October 2026 although GitHub's documentation does not list it yet). It needs a public
+  repository (or GitHub Advanced Security); elsewhere the job is skipped.
 - **In `just check`** (Python stack), `just licenses` checks every installed package, transitive
-  ones included, locally and in CI, on public and private repositories alike.
+  ones included, locally and in CI, on public and private repositories alike: it catches a problem
+  before the pull request, and it is the only check on a private repository.
 
 Licenses that cannot be determined are reported, not blocked: read the output. A malformed license
 expression fails `just licenses`: review the package and add an exception if it is acceptable. On a private

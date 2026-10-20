@@ -65,8 +65,9 @@ commands identical from the root:
 Any stack — shipped or created for a project — must provide:
 
 1. A root `justfile` with the recipes `setup`, `dev`, `format`, `fix`, `lint`, `typecheck`, `test`,
-   `check` (`check` = `lint` + `typecheck` + `test`; `format` only formats, so the edit hook never
-   deletes code; `dev` starts the app locally, or prints why there is nothing to run, e.g. a library).
+   `check` (`check` = `lint` + `typecheck` + `test`, plus `licenses` when item 8 applies; `format`
+   only formats, so the edit hook never deletes code; `dev` starts the app locally, or prints why
+   there is nothing to run, e.g. a library).
 2. A strict formatter, linter, type checker (or the language's compiler) and test runner, with
    coverage enforced at 80 %.
 3. A committed lockfile.
@@ -74,9 +75,11 @@ Any stack — shipped or created for a project — must provide:
 5. An ecosystem entry in `.github/dependabot.yml`.
 6. Its ignore patterns in `.gitignore`.
 7. For a reusable pack only: an example source file and test that demonstrate `docs/CONVENTIONS.md`.
-8. When GitHub's dependency graph cannot read the stack's lockfile (as with `uv.lock`): a
-   `licenses` recipe, part of `check`, that checks installed packages against
-   `.github/dependency-review-config.yml`.
+8. Where possible, a `licenses` recipe, part of `check`, that checks installed packages against
+   `.github/dependency-review-config.yml`. Required when GitHub's dependency graph cannot read the
+   stack's lockfile; the Python pack has one so the check also runs locally and on private
+   repositories, where `dependency-review` is skipped.
 9. A `.devcontainer/` (required for a reusable pack, optional for a project) that installs the
    toolchain and runs `just setup` when created, so `just check` passes inside it. Generated
-   folders (`.venv/`, `node_modules/`) live on a container volume, never shared with the host.
+   folders (`.venv/`, `node_modules/`) live on a container volume, never shared with the host. Its
+   `devcontainer-lock.json` is committed and kept current by Dependabot's `devcontainers` entry.

@@ -1,6 +1,6 @@
 # Weekly, grouped updates: one PR per ecosystem instead of one per package.
-# The stacks/* entries keep the template's packs current; /init-project replaces them with a single
-# entry for the project's own ecosystem at the repository root.
+# The stacks/* entries keep the template's packs and their dev containers current; /init-project
+# replaces them with one entry per stack directory of the project ("/" for a single stack).
 version: 2
 updates:
   - package-ecosystem: github-actions
@@ -35,5 +35,16 @@ updates:
       # that fail at runtime. Bump .nvmrc, "engines" and @types/node together, by hand.
       - dependency-name: "@types/node"
         update-types: ["version-update:semver-major"]
+    commit-message:
+      prefix: build
+
+  # Dev container features, pinned in each .devcontainer/devcontainer-lock.json.
+  - package-ecosystem: devcontainers
+    directories: [/stacks/python, /stacks/typescript]
+    schedule:
+      interval: weekly
+    groups:
+      devcontainers:
+        patterns: ["*"]
     commit-message:
       prefix: build

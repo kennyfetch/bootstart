@@ -1,6 +1,6 @@
 # Third-party package policy: the single allow-list for the whole repository.
-# Read by .github/workflows/dependency-review.yml (pull requests) and by the Python stack's
-# `just licenses` check (installed packages, because GitHub's dependency graph cannot read uv.lock).
+# Read by .github/workflows/dependency-review.yml (pull requests, public repositories) and by the
+# Python stack's `just licenses` check (installed packages, locally and on any repository).
 # Human-readable policy and the reasons behind it: docs/THIRD_PARTY.md. Keep both in sync.
 
 # SPDX identifiers: the "Allowed" rows of docs/THIRD_PARTY.md.
