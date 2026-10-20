@@ -31,9 +31,10 @@ stacks/                Stack packs (python, typescript), each with a dev contain
 
 ## Prerequisites
 
-[git](https://git-scm.com), [GitHub CLI](https://cli.github.com), [just](https://just.systems), and the
-tools of the stack you pick — or, for a dev container, Docker Desktop (or Podman Desktop) instead
-of the stack tools. On Windows:
+[git](https://git-scm.com), [GitHub CLI](https://cli.github.com), [just](https://just.systems), and either
+the tools of the stack you pick, or — for a dev container — Docker Desktop (or Podman Desktop) plus
+one way to open the container: VS Code with the Dev Containers extension, GitHub Codespaces, or
+Node.js for the dev container CLI (`npx @devcontainers/cli`). On Windows:
 
 ```powershell
 winget install --id GitHub.cli -e
@@ -98,8 +99,12 @@ command works as on the host and in CI.
   autonomously while seeing only the project, not the rest of the machine.
 - **How:** VS Code with the Dev Containers extension ("Reopen in Container"), GitHub Codespaces, or
   the CLI (`npx @devcontainers/cli up --workspace-folder .`). Claude Code's desktop app runs commands
-  on the host: to use the container, run `claude` in the container's terminal. `CLAUDE_CONFIG_DIR`
-  points to a volume, so its login, settings and trusted folders survive rebuilds.
+  on the host: to use the container, run `claude` in the container's terminal — on a host without
+  the stack tools, the edit hook (`just format`) would fail. `CLAUDE_CONFIG_DIR` points to a
+  volume, so its login, settings and trusted folders survive rebuilds.
+- **Init:** `/init-project` starts the container as soon as it is configured and runs the stack
+  commands inside it. Without Docker or Node.js on the host, it pauses and resumes once you have
+  reopened the folder in the container.
 - **Windows:** Docker Desktop (or Podman Desktop) with WSL 2. Clone projects inside WSL rather than
   on a Windows drive: file access is much faster. `.venv/` and `node_modules/` already live on
   container volumes.
