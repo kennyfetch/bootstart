@@ -36,7 +36,7 @@ Every task goes through `just` — the same commands run locally, in hooks and i
 
 ## Layout
 
-`src/` code · `tests/` tests mirroring `src/` · `docs/` documentation · `docs/decisions/` ADRs · `.claude/skills/` workflows
+`src/` code · `tests/` tests mirroring `src/` · `scripts/` tooling · `docs/` documentation · `docs/decisions/` ADRs · `.claude/skills/` workflows
 
 ## Rules
 

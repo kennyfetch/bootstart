@@ -96,8 +96,9 @@ Other languages: follow the official style guide of the language and record it i
 - Prefer the standard library, then well-maintained, widely used packages.
 - Every new dependency is justified in the PR description; a framework-level one gets an ADR.
 - Versions are locked by the lockfile, which is committed and never edited by hand.
-- Licenses follow `docs/THIRD_PARTY.md`: the `dependency-review` check enforces it for packages;
-  other assets (fonts, images, datasets, models) are recorded there by hand.
+- Licenses follow `docs/THIRD_PARTY.md`. For packages, the `dependency-review` check enforces it on
+  pull requests (public repositories), and the Python stack's `just licenses` everywhere, as part
+  of `just check`. Other assets (fonts, images, datasets, models) are recorded there by hand.
 
 ## 9. Review checklist
 

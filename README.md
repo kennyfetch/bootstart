@@ -23,7 +23,8 @@ docs/
   settings.json        Permissions, read exclusions, auto-format hook
   skills/              Workflows: init-project, feature, test, review, ship, handoff, adr
   agents/reviewer.md   Independent reviewer subagent
-.github/               CI, template self-test, Dependabot, PR and issue templates, CODEOWNERS
+.github/               CI, template self-test, license policy and check, Dependabot, PR and issue
+                       templates, CODEOWNERS
 scripts/setup-github.sh  Repository settings + branch protection (solo or team)
 stacks/                Stack packs (python, typescript), each with a dev container; removed by init-project
 ```
@@ -31,7 +32,8 @@ stacks/                Stack packs (python, typescript), each with a dev contain
 ## Prerequisites
 
 [git](https://git-scm.com), [GitHub CLI](https://cli.github.com), [just](https://just.systems), and the
-tools of the stack you pick. On Windows:
+tools of the stack you pick — or, for a dev container, Docker Desktop (or Podman Desktop) instead
+of the stack tools. On Windows:
 
 ```powershell
 winget install --id GitHub.cli -e
@@ -128,6 +130,7 @@ command works as on the host and in CI.
   pack jobs, their dev containers and the license check:
   `bash scripts/setup-github.sh solo "stack (python)" "stack (typescript)" "devcontainer (python)" "devcontainer (typescript)" dependency-review`.
 - To add a stack pack: create `stacks/<name>/` following the stack contract in `docs/STACKS.md`,
-  then add it to the `selftest` recipe, the self-test workflow matrix, `.github/dependabot.yml`,
-  the table in `docs/STACKS.md` and the required checks above.
+  then add it to the `selftest` recipe, both matrices of the self-test workflow (`stack` and
+  `devcontainer`), `.github/dependabot.yml` (its ecosystem and the `devcontainers` entry), the
+  table in `docs/STACKS.md` and the required checks above.
 - Mark the GitHub repository as a template: `gh repo edit --template`.

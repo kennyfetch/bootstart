@@ -32,7 +32,7 @@ access is much faster.
 | `just lint` | Check formatting and lint rules |
 | `just typecheck` | Static type checking |
 | `just test` | Run tests with coverage |
-| `just check` | All of the above, as in CI |
+| `just check` | All of the above (plus `just licenses` on a Python stack), as in CI |
 
 Workflow: branch from `main` → write tests first → `just check` → pull request (squash merge).
 Details in [docs/CONVENTIONS.md](docs/CONVENTIONS.md).
