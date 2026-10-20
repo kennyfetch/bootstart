@@ -64,6 +64,10 @@ gh repo edit "$repo" \
   --delete-branch-on-merge \
   --enable-auto-merge
 
+# Dependency graph + Dependabot alerts: the dependency-review license check needs the graph, and
+# a repository made public after being private does not always have it.
+gh api --method PUT "repos/$repo/vulnerability-alerts" >/dev/null
+
 ruleset_json="$(cat <<JSON
 {
   "name": "$RULESET_NAME",
